@@ -12,8 +12,8 @@ def main():
     rfg.draw()
     alg = pso.ParticleSwarmOptimization(eval_fn=rastrigin.rastrigin_fn,
                                         update_gui_callback=rfg.update_points,
-                                        nb_particles=20)
-    alg.run(max_iter=200)
+                                        nb_particles=10)
+    alg.run(max_iter=175)
 
     print('Best particle:',
           alg.best_x,

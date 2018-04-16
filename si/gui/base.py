@@ -1,7 +1,6 @@
 """
 Base classes for GUI
 """
-from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import numpy as np
@@ -19,7 +18,6 @@ class FunctionGUI(GUI):
     def __init__(self, func, val_range):
         self.val_range = val_range
         self.fn = func
-        self.surface_ax = None
 
         self.contour_ax = None
         self.marker_points = None
@@ -33,9 +31,8 @@ class FunctionGUI(GUI):
     def _setup(self):
         plt.ion()
         fig = plt.figure(figsize=(14, 7))
-        self.surface_ax = fig.add_subplot(221, projection='3d')
-        self.contour_ax = fig.add_subplot(222)
-        self.avg_result_ax = fig.add_subplot(223)
+        self.contour_ax = fig.add_subplot(121)
+        self.avg_result_ax = fig.add_subplot(122)
 
     def draw(self):
         X = np.arange(self.val_range[0], self.val_range[1], 0.1)
@@ -44,9 +41,6 @@ class FunctionGUI(GUI):
         X, Y = np.meshgrid(X, Y)
 
         Z = self.fn(X, Y)
-
-        self.surface_ax.plot_surface(X, Y, Z, cmap=cm.coolwarm,
-                                     linewidth=0, antialiased=False)
 
         self.contour_ax.contour(X, Y, Z, cmap=cm.coolwarm)
 
