@@ -2,16 +2,18 @@
 Visualize function and update
 """
 import matplotlib.pyplot as plt
-import numpy as np
 
-from si import visualization as gui
+from si import pso
+from si.gui import rastrigin
 
 
 def main():
-    rf = gui.RastriginFunctionGUI()
-    rf.draw()
-    for i in np.arange(-5.12, 5.12, 0.1):
-        rf.update_points(([i, -1 * i], [i, -1 * i]))
+    rfg = rastrigin.RastriginFunctionGUI()
+    rfg.draw()
+    alg = pso.PSO(evaluate_fn=rastrigin.rastrigin_fn,
+                  update_gui_callback=rfg.update_points,
+                  nb_particles=20)
+    alg.run()
 
 
 if __name__ == '__main__':
