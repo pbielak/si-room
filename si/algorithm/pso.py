@@ -49,9 +49,9 @@ class ParticleSwarmOptimization(base.SwarmIntelligenceAlgorithm):
         particles = []
 
         for i in range(nb_particles):
-            x = uniform(min_val, max_val, 2)
+            x = uniform(min_val, max_val, self.nb_dim)
             v = uniform(-1 * abs(max_val - min_val),
-                        abs(max_val - min_val), 2)
+                        abs(max_val - min_val), self.nb_dim)
             particles.append(Particle(i, x, v))
 
             if self.eval_fn(*x) < self.eval_fn(*self.best_x):

@@ -4,15 +4,20 @@ Visualize function and update
 import matplotlib.pyplot as plt
 
 from si.algorithm import pso
+from si.algorithm import ffa
 from si.gui import rastrigin
 
 
 def main():
     rfg = rastrigin.RastriginFunctionGUI()
     rfg.draw()
-    alg = pso.ParticleSwarmOptimization(eval_fn=rastrigin.rastrigin_fn,
-                                        update_gui_callback=rfg.update_points,
-                                        nb_particles=10)
+    # alg = pso.ParticleSwarmOptimization(eval_fn=rastrigin.rastrigin_fn,
+    #                                     update_gui_callback=rfg.update_points,
+    #                                     nb_particles=10)
+    alg = ffa.FireflyAlgorithm(eval_fn=rastrigin.rastrigin_fn,
+                               update_gui_callback=rfg.update_points,
+                               nb_fireflies=30)
+
     alg.run(max_iter=175)
 
     print('Best particle:',
