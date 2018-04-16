@@ -4,6 +4,10 @@ Particle Swarm Optimization
 import numpy as np
 
 
+def uniform(min_val=0, max_val=1, size=2):
+    return np.random.uniform(min_val, max_val, size)
+
+
 class Particle(object):
     def __init__(self, pid, x, v):
         self.pid = pid
@@ -25,29 +29,26 @@ class PSO(object):
     def __init__(self, evaluate_fn, update_gui_callback,
                  nb_particles=50,
                  val_bounds=(-5.12, 5.12),
-                 max_iter=500,
                  nb_dim=2):
-        self.nb_particles = nb_particles
         self.val_bounds = val_bounds
         self.eval_fn = evaluate_fn
         self.best_x = [9999] * nb_dim
-        self.max_iter = max_iter
         self.nb_dim = nb_dim
-        self.particles = self._initialize_particles()
         self.update_gui_callback = update_gui_callback
 
+        self.particles = self._generate_particles(nb_particles)
         self.update_gui(-1)
 
-    def _initialize_particles(self):
+    def _generate_particles(self, nb_particles):
         min_val = self.val_bounds[0]
         max_val = self.val_bounds[1]
 
         particles = []
 
-        for i in range(self.nb_particles):
-            x = np.random.uniform(min_val, max_val, 2)
-            v = np.random.uniform(-1 * abs(max_val - min_val),
-                                  abs(max_val - min_val), 2)
+        for i in range(nb_particles):
+            x = uniform(min_val, max_val, 2)
+            v = uniform(-1 * abs(max_val - min_val),
+                        abs(max_val - min_val), 2)
             particles.append(Particle(i, x, v))
 
             if self.eval_fn(*x) < self.eval_fn(*self.best_x):
@@ -55,12 +56,12 @@ class PSO(object):
 
         return particles
 
-    def run(self):
-        for i in range(self.max_iter):
+    def run(self, max_iter):
+        for i in range(max_iter):
             for p in self.particles:
                 for d in range(self.nb_dim):
-                    rp = np.random.uniform()
-                    rg = np.random.uniform()
+                    rp = uniform(size=1)
+                    rg = uniform(size=1)
                     p.v[d] = PSO.OMEGA * p.v[d] + \
                         PSO.PHI_P * rp * (p.best_x[d] - p.x[d]) + \
                         PSO.PHI_G * rg * (self.best_x[d] - p.x[d])
@@ -83,7 +84,7 @@ class PSO(object):
         all_particle_results = list(map(lambda p: self.eval_fn(*p.x),
                                         self.particles))
 
-        avg_result = sum(all_particle_results)/self.nb_particles
+        avg_result = sum(all_particle_results)/len(self.particles)
 
         msg = 'Iteration: {} \n' \
               '(current best: {} => {})\n' \

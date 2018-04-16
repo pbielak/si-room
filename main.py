@@ -13,7 +13,7 @@ def main():
     alg = pso.PSO(evaluate_fn=rastrigin.rastrigin_fn,
                   update_gui_callback=rfg.update_points,
                   nb_particles=20)
-    alg.run()
+    alg.run(max_iter=500)
 
 
 if __name__ == '__main__':
