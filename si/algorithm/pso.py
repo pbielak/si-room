@@ -62,13 +62,13 @@ class ParticleSwarmOptimization(base.SwarmIntelligenceAlgorithm):
     def run(self, max_iter):
         for i in range(max_iter):
             for p in self.particles:
-                for d in range(self.nb_dim):
-                    rp = uniform(size=1)
-                    rg = uniform(size=1)
-                    p.v[d] = self.OMEGA * p.v[d] + \
-                             self.PHI_P * rp * (p.best_x[d] - p.x[d]) + \
-                             self.PHI_G * rg * (self.best_x[d] - p.x[d])
-                p.x = list(np.add(p.x, p.v))
+                rp = uniform(size=self.nb_dim)
+                rg = uniform(size=self.nb_dim)
+                p.v = self.OMEGA * p.v + \
+                      self.PHI_P * rp * (p.best_x - p.x) + \
+                      self.PHI_G * rg * (self.best_x - p.x)
+
+                p.x = p.x + p.v
 
                 if self.eval_fn(*p.x) < self.eval_fn(*p.best_x):
                     p.best_x = p.x
