@@ -3,6 +3,8 @@ Particle Swarm Optimization
 """
 import numpy as np
 
+from si.algorithm import base
+
 
 def uniform(min_val=0, max_val=1, size=2):
     return np.random.uniform(min_val, max_val, size)
@@ -21,20 +23,21 @@ class Particle(object):
         )
 
 
-class PSO(object):
+class ParticleSwarmOptimization(base.SwarmIntelligenceAlgorithm):
     OMEGA = 0.25
     PHI_P = 2
     PHI_G = 2
 
-    def __init__(self, evaluate_fn, update_gui_callback,
+    def __init__(self, eval_fn, update_gui_callback,
                  nb_particles=50,
                  val_bounds=(-5.12, 5.12),
                  nb_dim=2):
+        super(ParticleSwarmOptimization, self).__init__(eval_fn,
+                                                        update_gui_callback)
+
         self.val_bounds = val_bounds
-        self.eval_fn = evaluate_fn
         self.best_x = [9999] * nb_dim
         self.nb_dim = nb_dim
-        self.update_gui_callback = update_gui_callback
 
         self.particles = self._generate_particles(nb_particles)
         self.update_gui(-1)
@@ -62,9 +65,9 @@ class PSO(object):
                 for d in range(self.nb_dim):
                     rp = uniform(size=1)
                     rg = uniform(size=1)
-                    p.v[d] = PSO.OMEGA * p.v[d] + \
-                        PSO.PHI_P * rp * (p.best_x[d] - p.x[d]) + \
-                        PSO.PHI_G * rg * (self.best_x[d] - p.x[d])
+                    p.v[d] = self.OMEGA * p.v[d] + \
+                             self.PHI_P * rp * (p.best_x[d] - p.x[d]) + \
+                             self.PHI_G * rg * (self.best_x[d] - p.x[d])
                 p.x = list(np.add(p.x, p.v))
 
                 if self.eval_fn(*p.x) < self.eval_fn(*p.best_x):
