@@ -51,6 +51,9 @@ class SwarmIntelligenceAlgorithm(object):
         for i in range(max_iter):
             for ind in self.individuals:
                 self.update_individual(ind)
+                ind.x = np.clip(ind.x,
+                                self.cfg.val_bounds[0],
+                                self.cfg.val_bounds[1])
 
                 if self.cfg.eval_fn(*ind.get_best()) < self.cfg.eval_fn(*self.best_x):
                     self.best_x = ind.get_best()

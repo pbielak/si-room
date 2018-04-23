@@ -3,6 +3,7 @@ Base classes for GUI
 """
 import matplotlib.pyplot as plt
 from matplotlib import cm
+import matplotlib.patches as patches
 import numpy as np
 
 
@@ -15,9 +16,10 @@ class GUI(object):
 
 
 class FunctionGUI(GUI):
-    def __init__(self, func, val_range):
+    def __init__(self, func, val_range, restricted):
         self.val_range = val_range
         self.fn = func
+        self.restricted = restricted
 
         self.contour_ax = None
         self.marker_points = None
@@ -43,6 +45,13 @@ class FunctionGUI(GUI):
         Z = self.fn(X, Y)
 
         self.contour_ax.contour(X, Y, Z, cmap=cm.coolwarm)
+
+        if self.restricted:
+            x = self.restricted
+            self.contour_ax.add_patch(
+                patches.Rectangle(xy=(-x, -x), width=2*x,
+                                  height=2*x, fill=False)
+            )
 
         self.marker_points = self.contour_ax.plot(1, 1, color='black',
                                                   marker='x', ms=10,

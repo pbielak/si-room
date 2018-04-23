@@ -9,6 +9,7 @@ def rastrigin_fn(*X):
 
 
 class RastriginFunctionGUI(base.FunctionGUI):
-    def __init__(self):
+    def __init__(self, restricted=None):
         super(RastriginFunctionGUI, self).__init__(func=rastrigin_fn,
-                                                   val_range=(-5.12, 5.12))
+                                                   val_range=(-5.12, 5.12),
+                                                   restricted=restricted)

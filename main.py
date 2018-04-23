@@ -11,7 +11,7 @@ from si.gui import rastrigin
 def common_options(eval_fn, gui_callback):
     return dict(eval_fn=eval_fn,
                 update_gui_callback=gui_callback,
-                swarm_size=20, val_bounds=(-5.12, 5.12),
+                swarm_size=20, val_bounds=(-2, 2),#val_bounds=(-5.12, 5.12),
                 nb_dim=2)
 
 
@@ -30,7 +30,7 @@ def get_ffa(eval_fn, gui_callback):
 
 
 def main():
-    rfg = rastrigin.RastriginFunctionGUI()
+    rfg = rastrigin.RastriginFunctionGUI(restricted=2)
     rfg.draw()
 
     # alg = get_pso(rastrigin.rastrigin_fn, rfg.update_points)
