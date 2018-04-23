@@ -21,23 +21,41 @@ class Room(object):
         else:
             pass
 
-    def is_correct_position(self, item, step_x, step_y, flip=None):
-        if flip is None:
-            flip = item.flip
+    def is_correct_position(self, item_idx, pos_x, pos_y, flip):
+        item = self.items[item_idx]
 
         if flip:
-            return item.position.x + step_x - item.half_width > 0 and \
-                   item.position.x + step_x + item.half_width < self.width and \
-                   item.position.y + step_y - item.half_height > 0 and \
-                   item.position.y + step_y + item.half_height < self.height
+            return pos_x - item.half_height > 0 and \
+                   pos_x + item.half_height < self.width and \
+                   pos_y - item.half_width > 0 and \
+                   pos_y + item.half_width < self.height
         else:
-            return item.position.x + step_x - item.half_height > 0 and \
-                   item.position.x + step_x + item.half_height < self.width and \
-                   item.position.y + step_y - item.half_width > 0 and \
-                   item.position.y + step_y + item.half_width < self.height
+            return pos_x - item.half_width > 0 and \
+                   pos_x + item.half_width < self.width and \
+                   pos_y - item.half_height > 0 and \
+                   pos_y + item.half_height < self.height
 
-    def move(self, item, step_x, step_y):
-        self.is_correct_position(item, step_x, step_y)
+    def move(self, item_idx, step_x, step_y):
+        item = self.items[item_idx]
+        if self.is_correct_position(item_idx,
+                                    item.position.x + step_x,
+                                    item.position.y + step_y,
+                                    item.position.flip):
+            item.position.x += step_x
+            item.position.y += step_y
 
-    def flip(self, item):
-        self.is_correct_position(item, 0, 0, not item.flip)
+            print("Item moved to new position")
+        else:
+            print("Can't move item to new position")
+
+    def flip(self, item_idx):
+        item = self.items[item_idx]
+        flip = item.position.flip
+        if self.is_correct_position(
+                item_idx, item.position.x, item.position.y,
+                not flip):
+
+            item.position.flip = not flip
+            print("Item flipped")
+        else:
+            print("Can't flip item")

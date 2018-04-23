@@ -6,7 +6,7 @@ all_items = []
 all_items.extend([
     Item(
         name='Sofa',
-        position=Position(0, 0, False),
+        position=Position(10, 5, False),
         half_width=10,
         half_height=5
     ),
