@@ -60,6 +60,7 @@ class RoomGUI(base.GUI):
                     alpha=0.8
                 )
             )
+            plt.text(f.figure.xmin, f.figure.ymin, type(f).__name__)
 
         plt.show()
 
@@ -69,6 +70,6 @@ class RoomGUI(base.GUI):
 
 # Test drawer
 if __name__ == '__main__':
-    r = Room(20, 20, load_default_room_furniture(), 3)
+    r = Room(40, 40, load_default_room_furniture(), 3)
     rd = RoomGUI(r)
     rd.draw()
