@@ -25,11 +25,25 @@ class Wardrobe(Furniture):
 
 class Table(Furniture):
     def __init__(self, x, y):
-        super(Table, self).__init__(x, y, width=1.5, height=1.5, carpet=True)
+        super(Table, self).__init__(x, y, width=10, height=10, carpet=True)
 
 
 class Sofa(Furniture):
     def __init__(self, x, y):
-        super(Sofa, self).__init__(x, y, width=5, height=3, carpet=False)
+        super(Sofa, self).__init__(x, y, width=15, height=4, carpet=True)
 
-# TODO: define rest of furniture
+
+class TV(Furniture):
+    def __init__(self, x, y):
+        super(TV, self).__init__(x, y, width=2, height=5, carpet=False)
+
+
+class Desk(Furniture):
+    def __init__(self, x, y):
+        super(Desk, self).__init__(x, y, width=7, height=13, carpet=False)
+
+
+class Chair(Furniture):
+    def __init__(self, x, y):
+        super(Chair, self).__init__(x, y, width=2.5, height=2.5, carpet=True)
+

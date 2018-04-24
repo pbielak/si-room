@@ -31,8 +31,14 @@ class Room(object):
 def load_default_room_furniture():
     furniture_classes = [
         fun.Wardrobe,
+        fun.Wardrobe,
+        fun.TV,
+        fun.Sofa,
         fun.Table,
-        fun.Sofa
-        # ...
+        fun.Chair,
+        fun.Chair,
+        fun.Chair,
+        fun.Chair,
+        fun.Desk
     ]
     return furniture_classes
