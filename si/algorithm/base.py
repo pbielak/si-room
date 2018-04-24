@@ -33,7 +33,7 @@ class SwarmIntelligenceAlgorithm(object):
             ind = self.get_random_individual()
             individuals.append(ind)
 
-            if self.eval_fn(*ind.x) < self.eval_fn(*self.best_x):
+            if self.eval_fn(ind.x) < self.eval_fn(self.best_x):
                 self.best_x = ind.x
 
         return individuals
@@ -52,7 +52,7 @@ class SwarmIntelligenceAlgorithm(object):
                                 self.val_bounds[0],
                                 self.val_bounds[1])
 
-                if self.eval_fn(*ind.get_best()) < self.eval_fn(*self.best_x):
+                if self.eval_fn(ind.get_best()) < self.eval_fn(self.best_x):
                     self.best_x = ind.get_best()
 
             self.update_gui(i)

@@ -3,6 +3,8 @@ Particle Swarm Optimization
 """
 from collections import namedtuple
 
+import numpy as np
+
 from si.algorithm import base
 from si import utils
 
@@ -48,5 +50,9 @@ class ParticleSwarmOptimization(base.SwarmIntelligenceAlgorithm):
 
         ind.x = ind.x + ind.v
 
-        if self.eval_fn(*ind.x) < self.eval_fn(*ind.best_x):
+        ind.x = np.clip(ind.x,
+                        self.val_bounds[0],
+                        self.val_bounds[1])
+
+        if self.eval_fn(ind.x) < self.eval_fn(ind.best_x):
             ind.best_x = ind.x

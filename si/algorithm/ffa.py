@@ -36,7 +36,7 @@ class FireflyAlgorithm(base.SwarmIntelligenceAlgorithm):
         return Firefly(x)
 
     def _intensity(self, x):
-        return 1.0 / (self.eval_fn(*x) + 1e-10)
+        return 1.0 / (self.eval_fn(x) + 1e-10)
 
     def _distance(self, x1, x2):
         return np.sqrt(np.sum((x1 - x2) ** 2))

@@ -1,6 +1,7 @@
 """
 Module for geometric functions stuff
 """
+import numpy as np
 
 
 class Rectangle(object):
@@ -63,3 +64,21 @@ def overlapping_area(r1, r2):
 def flip(r):
     r.x, r.y = r.y, r.x
     r.width, r.height = r.height, r.width
+
+
+def distance(p1, p2):
+    """p1, p2: 2-element tuple representing point"""
+    p1x, p1y = p1
+    p2x, p2y = p2
+    return np.sqrt((p1x - p2x) ** 2 + (p1y - p2y) ** 2)
+
+
+def angle(r1, r2):
+    angle_value = np.rad2deg(np.arctan2(r2.y - r1.y, r2.x - r1.x))
+    if r1.width >= r1.height and r2.width >= r2.height:
+        return angle_value
+    elif r1.width < r1.height and r2.width < r2.height:
+        return angle_value - 90
+    else:
+        raise Exception("Can't compute angle for furniture"
+                        " with different flips!")
