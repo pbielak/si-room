@@ -63,3 +63,13 @@ def overlapping_area(r1, r2):
 def flip(r):
     r.x, r.y = r.y, r.x
     r.width, r.height = r.height, r.width
+
+
+def distance(r1, r2):
+    # TODO: need to calc distance between two items
+    return 42
+
+
+def angle(r1, r2):
+    # TODO: need to calc angle between two items
+    return 42

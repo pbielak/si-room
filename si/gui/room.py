@@ -2,6 +2,7 @@ import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 
 from si.gui import base
+from si.problem.room_planning.eval import evaluate_room
 from si.problem.room_planning.room import Room, load_default_room_furniture
 
 
@@ -68,8 +69,9 @@ class RoomGUI(base.GUI):
         pass
 
 
-# Test drawer
+# Test drawer and evaluator
 if __name__ == '__main__':
     r = Room(40, 40, load_default_room_furniture(), 3)
+    print(evaluate_room(r))
     rd = RoomGUI(r)
     rd.draw()
