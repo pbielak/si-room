@@ -66,7 +66,10 @@ class RoomGUI(base.GUI):
         plt.show()
 
     def update_points(self, iteration, swarm, best_x):
-        pass
+        (w1x, w1y, w2x, w2y, tvx, tvy, sx, sy, tx, ty,
+         c1x, c1y, c2x, c2y, c3x, c3y, c4x, c4y, dx, dy) = best_x
+
+
 
 
 # Test drawer and evaluator

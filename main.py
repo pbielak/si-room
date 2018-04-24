@@ -38,8 +38,8 @@ def main():
                                restricted=2)
     rfg.draw()
 
-    alg = get_pso(rastrigin.rastrigin_fn, rfg.update_points)
-    # alg = get_ffa(rastrigin.rastrigin_fn, rfg.update_points)
+    # alg = get_pso(rastrigin.rastrigin_fn, rfg.update_points)
+    alg = get_ffa(rastrigin.rastrigin_fn, rfg.update_points)
 
     alg.run(max_iter=175)
 

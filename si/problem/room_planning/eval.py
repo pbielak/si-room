@@ -25,6 +25,8 @@ def evaluate_room(room):
                 continue
 
     # how far from table are chairs
+    table = room.furniture['Table']
+    # TODO:
     table = list(filter(lambda f: type(f).__name__ == 'Table',
                         room.furniture))[0]
     chairs = list(filter(lambda f: type(f).__name__ == 'Chair', room.furniture))
