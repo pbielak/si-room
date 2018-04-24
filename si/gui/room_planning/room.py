@@ -22,8 +22,8 @@ class Room(object):
                                   self.bounding_box.ymax)
 
             f = cls(x, y)
-            if not geom.inside(f, self.bounding_box):
-                geom.move_inside(f, self.bounding_box)
+            if not geom.inside(f.figure, self.bounding_box):
+                geom.move_inside(f.figure, self.bounding_box)
 
             furniture.append(f)
         return furniture
@@ -33,6 +33,7 @@ def load_default_room_furniture():
     furniture_classes = [
         fun.Wardrobe,
         fun.Table,
+        fun.Sofa
         # ...
     ]
     return furniture_classes

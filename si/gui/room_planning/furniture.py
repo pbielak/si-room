@@ -27,4 +27,9 @@ class Table(Furniture):
     def __init__(self, x, y):
         super(Table, self).__init__(x, y, width=1.5, height=1.5, carpet=True)
 
+
+class Sofa(Furniture):
+    def __init__(self, x, y):
+        super(Sofa, self).__init__(x, y, width=5, height=3, carpet=False)
+
 # TODO: define rest of furniture
