@@ -7,5 +7,5 @@ class GUI(object):
     def draw(self):
         pass
 
-    def update_points(self, msg, pts, avg_result):
+    def update_points(self, iteration, swarm, best_x):
         pass

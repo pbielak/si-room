@@ -61,22 +61,4 @@ class SwarmIntelligenceAlgorithm(object):
         if not self.update_gui_callback:
             return
 
-        if self.nb_dim != 2:
-            raise ValueError("Can visualize only 3D plots (NB_DIM must be 2)!")
-
-        all_particle_results = list(map(lambda p: self.eval_fn(*p.x),
-                                        self.individuals))
-
-        avg_result = sum(all_particle_results)/len(self.individuals)
-
-        msg = 'Iteration: {} \n' \
-              '(current best: {} => {})\n' \
-              'Avg result: {}'.format(
-            iteration, np.round(self.best_x, 2),
-            np.round(self.eval_fn(*self.best_x), 2),
-            np.round(avg_result, 2)
-        )
-        pts_x = list(map(lambda p: p.x[0], self.individuals))
-        pts_y = list(map(lambda p: p.x[1], self.individuals))
-        self.update_gui_callback(msg, (pts_x, pts_y),
-                                 (iteration, avg_result))
+        self.update_gui_callback(iteration, self.individuals, self.best_x)
