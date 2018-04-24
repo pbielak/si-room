@@ -1,12 +1,14 @@
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 
+from si.gui import base
 from si.problem.room_planning.room import Room, load_default_room_furniture
 
 
-class RoomGUI(object):
+class RoomGUI(base.GUI):
 
-    def __init__(self):
+    def __init__(self, room):
+        self.room = room
         self._init_draw()
 
     def _init_draw(self):
@@ -14,35 +16,59 @@ class RoomGUI(object):
         self.room_ax = fig.add_subplot(111)
         self.color_map = plt.cm.get_cmap('hsv', 10)
 
-    def draw(self, room):
+    def draw(self):
         self.room_ax.clear()
 
-        self.room_ax.set_xlim(room.bounding_box.xmin, room.bounding_box.xmax)
-        self.room_ax.set_ylim(room.bounding_box.ymin, room.bounding_box.ymax)
+        room_bb = self.room.bounding_box
+
+        self.room_ax.set_xlim(room_bb.xmin, room_bb.xmax)
+        self.room_ax.set_ylim(room_bb.ymin, room_bb.ymax)
 
         # room walls
-        self.room_ax.add_patch(patches.Rectangle(
-            (room.bounding_box.xmin, room.bounding_box.ymin),
-            room.bounding_box.width, room.bounding_box.height,
-            linewidth=3, color='grey'))
+        self.room_ax.add_patch(
+            patches.Rectangle(
+                (room_bb.xmin, room_bb.ymin),
+                room_bb.width,
+                room_bb.height,
+                linewidth=3,
+                color='grey'
+            )
+        )
 
         # carpet
-        self.room_ax.add_patch(patches.Circle(
-            (0, 0), room.carpet_radius,
-            linewidth=1, color='chocolate', alpha=0.5, hatch='*'))
+        self.room_ax.add_patch(
+            patches.Circle(
+                (0, 0),
+                self.room.carpet_radius,
+                linewidth=1,
+                color='chocolate',
+                alpha=0.5,
+                hatch='*'
+            )
+        )
 
         # furniture
-        for idx, f in enumerate(room.furniture):
-            self.room_ax.add_patch(patches.Rectangle(
-                (f.figure.xmin, f.figure.ymin),
-                f.figure.width, f.figure.height,
-                linewidth=1, color=self.color_map(idx), alpha=0.8))
+        for idx, f in enumerate(self.room.furniture):
+            fg = f.figure
+            self.room_ax.add_patch(
+                patches.Rectangle(
+                    (fg.xmin, fg.ymin),
+                    fg.width,
+                    fg.height,
+                    linewidth=1,
+                    color=self.color_map(idx),
+                    alpha=0.8
+                )
+            )
 
         plt.show()
+
+    def update_points(self, iteration, swarm, best_x):
+        pass
 
 
 # Test drawer
 if __name__ == '__main__':
     r = Room(20, 20, load_default_room_furniture(), 3)
-    rd = RoomGUI()
-    rd.draw(r)
+    rd = RoomGUI(r)
+    rd.draw()
