@@ -1,7 +1,7 @@
 """
 Module for furniture definition
 """
-from si.gui.room_planning import geometry as geom
+from si.problem.room_planning import geometry as geom
 
 
 class Furniture(object):

@@ -1,7 +1,7 @@
 """
 Module for room evaluation
 """
-from si.gui.room_planning import room as rcls
+from si.problem.room_planning import room as rcls
 
 
 def evaluate_room(room: rcls.Room) -> float:

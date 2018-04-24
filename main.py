@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 
 from si.algorithm import pso
 from si.algorithm import ffa
-from si.gui import rastrigin
+from si.gui import function
+from si.problem.function_optimization import rastrigin
 
 
 def common_options(eval_fn, gui_callback):
@@ -16,25 +17,29 @@ def common_options(eval_fn, gui_callback):
 
 
 def get_pso(eval_fn, gui_callback):
-    cfg = pso.PSOOptions(omega=0.25, phi_p=2, phi_g=2,
-                         **common_options(eval_fn, gui_callback))
-    alg = pso.ParticleSwarmOptimization(cfg)
+    alg = pso.ParticleSwarmOptimization(
+        options=pso.PSOOptions(omega=0.25, phi_p=2, phi_g=2),
+        **common_options(eval_fn, gui_callback)
+    )
     return alg
 
 
 def get_ffa(eval_fn, gui_callback):
-    cfg = ffa.FFAOptions(alpha=0.15, beta_0=0.7, gamma=2,
-                         **common_options(eval_fn, gui_callback))
-    alg = ffa.FireflyAlgorithm(cfg)
+    alg = ffa.FireflyAlgorithm(
+        options=ffa.FFAOptions(alpha=0.15, beta_0=0.7, gamma=2),
+        **common_options(eval_fn, gui_callback)
+    )
     return alg
 
 
 def main():
-    rfg = rastrigin.RastriginFunctionGUI(restricted=2)
+    rfg = function.FunctionGUI(func=rastrigin.rastrigin_fn,
+                               val_range=(-5.12, 5.12),
+                               restricted=2)
     rfg.draw()
 
-    # alg = get_pso(rastrigin.rastrigin_fn, rfg.update_points)
-    alg = get_ffa(rastrigin.rastrigin_fn, rfg.update_points)
+    alg = get_pso(rastrigin.rastrigin_fn, rfg.update_points)
+    # alg = get_ffa(rastrigin.rastrigin_fn, rfg.update_points)
 
     alg.run(max_iter=175)
 
