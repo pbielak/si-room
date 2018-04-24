@@ -1,6 +1,7 @@
 """
 Module for geometric functions stuff
 """
+import numpy as np
 
 
 class Rectangle(object):
@@ -65,11 +66,12 @@ def flip(r):
     r.width, r.height = r.height, r.width
 
 
-def distance(r1, r2):
-    # TODO: need to calc distance between two items
-    return 42
+def distance(p1, p2):
+    """p1, p2: 2-element tuple representing point"""
+    p1x, p1y = p1
+    p2x, p2y = p2
+    return np.sqrt((p1x - p2x) ** 2 + (p1y - p2y) ** 2)
 
 
 def angle(r1, r2):
-    # TODO: need to calc angle between two items
-    return 42
+    return np.rad2deg(np.arctan2(r2.y - r1.y, r2.x - r1.x)) + 180.0
