@@ -17,16 +17,18 @@ def common_options(eval_fn, gui_callback):
 
 
 def get_pso(eval_fn, gui_callback):
-    cfg = pso.PSOOptions(omega=0.25, phi_p=2, phi_g=2,
-                         **common_options(eval_fn, gui_callback))
-    alg = pso.ParticleSwarmOptimization(cfg)
+    alg = pso.ParticleSwarmOptimization(
+        options=pso.PSOOptions(omega=0.25, phi_p=2, phi_g=2),
+        **common_options(eval_fn, gui_callback)
+    )
     return alg
 
 
 def get_ffa(eval_fn, gui_callback):
-    cfg = ffa.FFAOptions(alpha=0.15, beta_0=0.7, gamma=2,
-                         **common_options(eval_fn, gui_callback))
-    alg = ffa.FireflyAlgorithm(cfg)
+    alg = ffa.FireflyAlgorithm(
+        options=ffa.FFAOptions(alpha=0.15, beta_0=0.7, gamma=2),
+        **common_options(eval_fn, gui_callback)
+    )
     return alg
 
 
