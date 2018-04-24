@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 
 from si.algorithm import pso
 from si.algorithm import ffa
-from si.gui import rastrigin
+from si.gui import function
+from si.problem.function_optimization import rastrigin
 
 
 def common_options(eval_fn, gui_callback):
@@ -30,11 +31,13 @@ def get_ffa(eval_fn, gui_callback):
 
 
 def main():
-    rfg = rastrigin.RastriginFunctionGUI(restricted=2)
+    rfg = function.FunctionGUI(func=rastrigin.rastrigin_fn,
+                               val_range=(-5.12, 5.12),
+                               restricted=2)
     rfg.draw()
 
-    # alg = get_pso(rastrigin.rastrigin_fn, rfg.update_points)
-    alg = get_ffa(rastrigin.rastrigin_fn, rfg.update_points)
+    alg = get_pso(rastrigin.rastrigin_fn, rfg.update_points)
+    # alg = get_ffa(rastrigin.rastrigin_fn, rfg.update_points)
 
     alg.run(max_iter=175)
 

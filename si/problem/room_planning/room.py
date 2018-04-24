@@ -3,8 +3,7 @@ Module for room class and functions
 """
 import numpy as np
 
-from si.gui.room_planning import furniture as fun
-from si.gui.room_planning import geometry as geom
+from si.problem.room_planning import furniture as fun, geometry as geom
 
 
 class Room(object):
