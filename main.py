@@ -3,8 +3,9 @@ Visualize function and update
 """
 import matplotlib.pyplot as plt
 
-from si.algorithm import pso
+from si.algorithm import bat
 from si.algorithm import ffa
+from si.algorithm import pso
 from si.gui import function
 from si.problem.function_optimization import rastrigin
 
@@ -12,7 +13,7 @@ from si.problem.function_optimization import rastrigin
 def common_options(eval_fn, gui_callback):
     return dict(eval_fn=eval_fn,
                 update_gui_callback=gui_callback,
-                swarm_size=20, val_bounds=(-2, 2),#val_bounds=(-5.12, 5.12),
+                swarm_size=30, val_bounds=(-5.12, 5.12),
                 nb_dim=2)
 
 
@@ -32,14 +33,25 @@ def get_ffa(eval_fn, gui_callback):
     return alg
 
 
+def get_bat(eval_fn, gui_callback):
+    alg = bat.BatAlgorithm(
+        options=bat.BatOptions(alpha=0.9, gamma=0.9,
+                               f_min=0, f_max=1,
+                               A_0=100, A_min=1),
+        **common_options(eval_fn, gui_callback)
+    )
+    return alg
+
+
 def main():
     rfg = function.FunctionGUI(func=rastrigin.rastrigin_fn,
                                val_range=(-5.12, 5.12),
-                               restricted=2)
+                               restricted=None)
     rfg.draw()
 
-    alg = get_pso(rastrigin.rastrigin_fn, rfg.update_points)
+    # alg = get_bat(rastrigin.rastrigin_fn, rfg.update_points)
     # alg = get_ffa(rastrigin.rastrigin_fn, rfg.update_points)
+    alg = get_pso(rastrigin.rastrigin_fn, rfg.update_points)
 
     alg.run(max_iter=175)
 
