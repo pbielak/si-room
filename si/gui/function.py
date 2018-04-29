@@ -67,7 +67,7 @@ class FunctionGUI(base.GUI):
               '(current best: {} => {})\n' \
               'Avg result: {}'.format(
             iteration, np.round(best_x, 2),
-            np.round(self.eval_fn(best_x), 2),
+            np.round(self.eval_fn(*best_x), 2),
             np.round(avg_result, 2)
         )
         self.contour_ax.set_title(msg)
