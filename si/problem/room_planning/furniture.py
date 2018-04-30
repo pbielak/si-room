@@ -35,7 +35,7 @@ class Sofa(Furniture):
 
 class TV(Furniture):
     def __init__(self, x, y):
-        super(TV, self).__init__(x, y, width=2, height=5, carpet=False)
+        super(TV, self).__init__(x, y, width=5, height=2, carpet=False)
 
 
 class Desk(Furniture):

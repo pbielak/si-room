@@ -3,48 +3,64 @@ Module for room evaluation
 """
 import si.problem.room_planning.geometry as geom
 
-sofa_tv_max_angle = 30
+tv_max_angle = 30
+intersections_penalty = 5
 
-# TODO: need to adjust params
-intersections_penalty = 2
+
+def punish_intersections(room):
+    penalty = 0
+
+    for first_furniture in room.furniture.values():
+        for second_furniture in room.furniture.values():
+            if first_furniture != second_furniture:
+                if geom.intersects(first_furniture.figure,
+                                   second_furniture.figure):
+                    penalty += intersections_penalty
+            else:
+                continue
+
+    return penalty
+
+
+def punish_chairs(room):
+    penalty = 0
+
+    table = room.furniture['Table']
+    chairs = [
+        room.furniture['Chair1'],
+        room.furniture['Chair2'],
+        room.furniture['Chair3'],
+        room.furniture['Chair4']
+    ]
+
+    for chair in chairs:
+        if not geom.intersects(chair.figure, table.figure):
+            penalty += geom.distance((chair.figure.x, chair.figure.y),
+                                     (table.figure.x, table.figure.y))
+
+    return penalty
+
+
+def punish_sofa(room):
+    penalty = 0
+
+    tv = room.furniture['TV']
+    sofa = room.furniture['Sofa']
+
+    if not geom.intersects(tv.figure, sofa.figure):
+        tv_current_angle = geom.angle(tv.figure, sofa.figure)
+        if tv_current_angle > tv_max_angle:
+            penalty += tv_max_angle - tv_current_angle
+
+
+def punish_carpet(room):
+    pass
 
 
 def evaluate_room(room):
     """Should take an Room object and calculate the fitness (real number).
     Lower value = better value."""
 
-    fitness = 0.0
-
-    # intersections
-    for first_furniture in room.furniture:
-        for second_furniture in room.furniture:
-            if first_furniture != second_furniture:
-                if geom.intersects(first_furniture.figure, second_furniture.figure):
-                    fitness += intersections_penalty
-            else:
-                continue
-
-    # how far from table are chairs
-    table = room.furniture['Table']
-    # TODO:
-    table = list(filter(lambda f: type(f).__name__ == 'Table',
-                        room.furniture))[0]
-    chairs = list(filter(lambda f: type(f).__name__ == 'Chair', room.furniture))
-
-    for chair in chairs:
-        # penalty was assigned earlier
-        if not geom.intersects(chair.figure, table.figure):
-            fitness += geom.distance(chair.figure, table.figure)
-
-    # sofa and tv angle
-    sofa = list(filter(lambda f: type(f).__name__ == 'Sofa', room.furniture))[0]
-    tv = list(filter(lambda f: type(f).__name__ == 'TV', room.furniture))[0]
-
-    if not geom.intersects(sofa.figure, tv.figure):
-        sofa_tv_angle = geom.angle(sofa.figure, tv.figure)
-        if sofa_tv_angle > sofa_tv_max_angle:
-            fitness += sofa_tv_angle - sofa_tv_max_angle
-
-    # TODO: spaces between furniture
-
+    fitness = 0
     return fitness
+
