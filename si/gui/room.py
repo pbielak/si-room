@@ -49,7 +49,7 @@ class RoomGUI(base.GUI):
         )
 
         # furniture
-        for idx, (_, f) in enumerate(self.room.furniture.items()):
+        for idx, f in enumerate(self.room.furniture.values()):
             fg = f.figure
             self.room_ax.add_patch(
                 patches.Rectangle(

@@ -2,14 +2,17 @@
 Module for room evaluation
 """
 import si.problem.room_planning.geometry as geom
+from math import pi
 
-tv_max_angle = 30
-intersections_penalty = 5
+spec_angle = 30
+intersections_penalty = 10
+angle_penalty = 15
+carpet_penalty = 10
 
 
-def punish_intersections(room):
+# PENALTIES METHODS
+def punish_for_intersections(room):
     penalty = 0
-
     for first_furniture in room.furniture.values():
         for second_furniture in room.furniture.values():
             if first_furniture != second_furniture:
@@ -22,9 +25,8 @@ def punish_intersections(room):
     return penalty
 
 
-def punish_chairs(room):
+def punish_for_chairs_placement(room):
     penalty = 0
-
     table = room.furniture['Table']
     chairs = [
         room.furniture['Chair1'],
@@ -41,26 +43,47 @@ def punish_chairs(room):
     return penalty
 
 
-def punish_sofa(room):
+def punish_for_too_big_spectator_angle(room):
     penalty = 0
-
     tv = room.furniture['TV']
     sofa = room.furniture['Sofa']
-
     if not geom.intersects(tv.figure, sofa.figure):
-        tv_current_angle = geom.angle(tv.figure, sofa.figure)
-        if tv_current_angle > tv_max_angle:
-            penalty += tv_max_angle - tv_current_angle
+        current_angle = geom.angle(tv.figure, sofa.figure)
+        if sofa.figure.width >= sofa.figure.height:
+            if not ((-90 - spec_angle / 2 <= current_angle <= -90 + spec_angle / 2)
+                    or (90 - spec_angle / 2 <= current_angle <= 90 + spec_angle / 2)):
+                penalty += angle_penalty
+        else:
+            pass
+            # TODO: implement vertical approach
+
+    return penalty
 
 
-def punish_carpet(room):
-    pass
+def punish_for_carpet_intersection(room):
+    penalty = 0
+    carpet_rectangle = geom.Rectangle(
+        0, 0, room.carpet_radius, room.carpet_radius)
+    for f in room.furniture.values():
+        if not f.carpet and geom.intersects(f.figure, carpet_rectangle):
+            penalty += carpet_penalty
+
+    return penalty
 
 
+# REWARDS METHODS
+def reward_for_carpet_size(room):
+    return pi * room.carpet_radius ** 2
+
+
+# FINAL EVAL
 def evaluate_room(room):
     """Should take an Room object and calculate the fitness (real number).
-    Lower value = better value."""
-
-    fitness = 0
+    Bigger value = better value."""
+    fitness = 0.0
+    fitness -= punish_for_intersections(room)
+    fitness -= punish_for_chairs_placement(room)
+    fitness -= punish_for_carpet_intersection(room)
+    fitness -= punish_for_too_big_spectator_angle(room)
+    fitness += reward_for_carpet_size(room)
     return fitness
-
