@@ -2,49 +2,88 @@
 Module for room evaluation
 """
 import si.problem.room_planning.geometry as geom
+from math import pi
 
-sofa_tv_max_angle = 30
+spec_angle = 30
+intersections_penalty = 10
+angle_penalty = 15
+carpet_penalty = 10
 
-# TODO: need to adjust params
-intersections_penalty = 2
 
-
-def evaluate_room(room):
-    """Should take an Room object and calculate the fitness (real number).
-    Lower value = better value."""
-
-    fitness = 0.0
-
-    # intersections
-    for first_furniture in room.furniture:
-        for second_furniture in room.furniture:
+# PENALTIES METHODS
+def punish_for_intersections(room):
+    penalty = 0
+    for first_furniture in room.furniture.values():
+        for second_furniture in room.furniture.values():
             if first_furniture != second_furniture:
-                if geom.intersects(first_furniture.figure, second_furniture.figure):
-                    fitness += intersections_penalty
+                if geom.intersects(first_furniture.figure,
+                                   second_furniture.figure):
+                    penalty += intersections_penalty
             else:
                 continue
 
-    # how far from table are chairs
+    return penalty
+
+
+def punish_for_chairs_placement(room):
+    penalty = 0
     table = room.furniture['Table']
-    # TODO:
-    table = list(filter(lambda f: type(f).__name__ == 'Table',
-                        room.furniture))[0]
-    chairs = list(filter(lambda f: type(f).__name__ == 'Chair', room.furniture))
+    chairs = [
+        room.furniture['Chair1'],
+        room.furniture['Chair2'],
+        room.furniture['Chair3'],
+        room.furniture['Chair4']
+    ]
 
     for chair in chairs:
-        # penalty was assigned earlier
         if not geom.intersects(chair.figure, table.figure):
-            fitness += geom.distance(chair.figure, table.figure)
+            penalty += geom.distance((chair.figure.x, chair.figure.y),
+                                     (table.figure.x, table.figure.y))
 
-    # sofa and tv angle
-    sofa = list(filter(lambda f: type(f).__name__ == 'Sofa', room.furniture))[0]
-    tv = list(filter(lambda f: type(f).__name__ == 'TV', room.furniture))[0]
+    return penalty
 
-    if not geom.intersects(sofa.figure, tv.figure):
-        sofa_tv_angle = geom.angle(sofa.figure, tv.figure)
-        if sofa_tv_angle > sofa_tv_max_angle:
-            fitness += sofa_tv_angle - sofa_tv_max_angle
 
-    # TODO: spaces between furniture
+def punish_for_too_big_spectator_angle(room):
+    penalty = 0
+    tv = room.furniture['TV']
+    sofa = room.furniture['Sofa']
+    if not geom.intersects(tv.figure, sofa.figure):
+        current_angle = geom.angle(tv.figure, sofa.figure)
+        if sofa.figure.width >= sofa.figure.height:
+            if not ((-90 - spec_angle / 2 <= current_angle <= -90 + spec_angle / 2)
+                    or (90 - spec_angle / 2 <= current_angle <= 90 + spec_angle / 2)):
+                penalty += angle_penalty
+        else:
+            pass
+            # TODO: implement vertical approach
 
+    return penalty
+
+
+def punish_for_carpet_intersection(room):
+    penalty = 0
+    carpet_rectangle = geom.Rectangle(
+        0, 0, room.carpet_radius, room.carpet_radius)
+    for f in room.furniture.values():
+        if not f.carpet and geom.intersects(f.figure, carpet_rectangle):
+            penalty += carpet_penalty
+
+    return penalty
+
+
+# REWARDS METHODS
+def reward_for_carpet_size(room):
+    return pi * room.carpet_radius ** 2
+
+
+# FINAL EVAL
+def evaluate_room(room):
+    """Should take an Room object and calculate the fitness (real number).
+    Bigger value = better value."""
+    fitness = 0.0
+    fitness -= punish_for_intersections(room)
+    fitness -= punish_for_chairs_placement(room)
+    fitness -= punish_for_carpet_intersection(room)
+    fitness -= punish_for_too_big_spectator_angle(room)
+    fitness += reward_for_carpet_size(room)
     return fitness

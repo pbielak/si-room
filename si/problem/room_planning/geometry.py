@@ -74,4 +74,4 @@ def distance(p1, p2):
 
 
 def angle(r1, r2):
-    return np.rad2deg(np.arctan2(r2.y - r1.y, r2.x - r1.x)) + 180.0
+    return np.rad2deg(np.arctan2(r2.y - r1.y, r2.x - r1.x))
