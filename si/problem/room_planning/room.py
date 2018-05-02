@@ -17,8 +17,8 @@ class Room(object):
         elif furniture_classes is None and furniture_dict is not None:
             self.furniture = furniture_dict
         else:
-            raise Exception("(Not)providing furniture_classes and furniture_items"
-                            " in the same time is not allowed!")
+            raise Exception("(Not)providing furniture_classes "
+                            "and furniture_items is not allowed!")
 
     def _init_furniture(self, furniture_classes):
         furniture = {}
