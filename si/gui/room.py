@@ -72,7 +72,7 @@ class RoomGUI(base.GUI):
 
 # Test drawer and evaluator
 if __name__ == '__main__':
-    r = Room(40, 40, load_default_room_furniture(), 3)
+    r = Room(40, 40, 3, furniture_classes=load_default_room_furniture())
     print(evaluate_room(r))
     rd = RoomGUI(r)
     rd.draw()

@@ -7,15 +7,18 @@ from si.problem.room_planning import furniture as fun, geometry as geom
 
 
 class Room(object):
-    def __init__(self, width, height, furniture_classes, carpet_radius,
-                 furniture_dict=None):
+    def __init__(self, width, height, carpet_radius,
+                 furniture_classes=None, furniture_dict=None):
         self.bounding_box = geom.Rectangle(0, 0, width, height)
         self.carpet_radius = carpet_radius
 
-        if furniture_dict is None:
+        if furniture_classes is not None and furniture_dict is None:
             self.furniture = self._init_furniture(furniture_classes)
-        else:
+        elif furniture_classes is None and furniture_dict is not None:
             self.furniture = furniture_dict
+        else:
+            raise Exception("(Not)providing furniture_classes and furniture_items"
+                            " in the same time is not allowed!")
 
     def _init_furniture(self, furniture_classes):
         furniture = {}
