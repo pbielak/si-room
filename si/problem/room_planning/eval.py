@@ -4,10 +4,12 @@ Module for room evaluation
 import si.problem.room_planning.geometry as geom
 from math import pi
 
-spec_angle = 30
-intersections_penalty = 10
-angle_penalty = 15
-carpet_penalty = 10
+# ROOM PARAMETERS
+spectator_max_angle = 30
+
+# PENALTIES VALUES
+# TODO: add other penalties values
+penalty_value = 10
 
 
 # PENALTIES METHODS
@@ -18,7 +20,7 @@ def punish_for_intersections(room):
             if first_furniture != second_furniture:
                 if geom.intersects(first_furniture.figure,
                                    second_furniture.figure):
-                    penalty += intersections_penalty
+                    penalty += penalty_value
             else:
                 continue
 
@@ -43,30 +45,27 @@ def punish_for_chairs_placement(room):
     return penalty
 
 
+# TODO: degrees above allowed angle will be better penalty?
 def punish_for_too_big_spectator_angle(room):
     penalty = 0
     tv = room.furniture['TV']
     sofa = room.furniture['Sofa']
     if not geom.intersects(tv.figure, sofa.figure):
         current_angle = geom.angle(tv.figure, sofa.figure)
-        if sofa.figure.width >= sofa.figure.height:
-            if not ((-90 - spec_angle / 2 <= current_angle <= -90 + spec_angle / 2)
-                    or (90 - spec_angle / 2 <= current_angle <= 90 + spec_angle / 2)):
-                penalty += angle_penalty
-        else:
-            pass
-            # TODO: implement vertical approach
-
+        if abs(current_angle) >= 90 + spectator_max_angle / 2 \
+                or abs(current_angle) <= 90 - spectator_max_angle / 2:
+            penalty += penalty_value
     return penalty
 
 
+# TODO; penalty like furniture intersections?
 def punish_for_carpet_intersection(room):
     penalty = 0
-    carpet_rectangle = geom.Rectangle(
-        0, 0, room.carpet_radius, room.carpet_radius)
+    carpet_rectangle = geom.Rectangle(0, 0,
+                                      room.carpet_radius, room.carpet_radius)
     for f in room.furniture.values():
         if not f.carpet and geom.intersects(f.figure, carpet_rectangle):
-            penalty += carpet_penalty
+            penalty += penalty_value
 
     return penalty
 

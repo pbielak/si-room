@@ -74,4 +74,11 @@ def distance(p1, p2):
 
 
 def angle(r1, r2):
-    return np.rad2deg(np.arctan2(r2.y - r1.y, r2.x - r1.x))
+    angle_value = np.rad2deg(np.arctan2(r2.y - r1.y, r2.x - r1.x))
+    if r1.width >= r1.height and r2.width >= r2.height:
+        return angle_value
+    elif r1.width < r1.height and r2.width < r2.height:
+        return angle_value - 90
+    else:
+        raise Exception("Can't compute angle for furniture"
+                        " with different flips!")

@@ -2,10 +2,10 @@ import unittest
 
 import si.problem.room_planning.eval as evals
 from si.problem.room_planning import furniture as fun
+from si.problem.room_planning.geometry import flip
 from si.problem.room_planning.room import Room
 
 
-# TODO: maybe change all asserts to floating point cases?
 class TestRoomEvaluator(unittest.TestCase):
 
     def test_intersections_exist(self):
@@ -76,12 +76,16 @@ class TestRoomEvaluator(unittest.TestCase):
         """In this test spectator angle is smaller than 30 degrees."""
 
         furniture_dict = {
-            'TV': fun.TV(8, 14),
+            'TV': fun.TV(8, 23),
             'Sofa': fun.Sofa(8, 18)
         }
+
         test_room = Room(50, 50, 5, furniture_dict=furniture_dict)
-        self.assertEqual(
-            evals.punish_for_too_big_spectator_angle(test_room), 0)
+        self.assertEqual(evals.punish_for_too_big_spectator_angle(test_room), 0)
+
+        flip(furniture_dict['TV'].figure)
+        flip(furniture_dict['Sofa'].figure)
+        self.assertEqual(evals.punish_for_too_big_spectator_angle(test_room), 0)
 
     def test_too_big_spectator_angle(self):
         """In this test spectator angle is bigger than 30 degrees."""
@@ -91,8 +95,11 @@ class TestRoomEvaluator(unittest.TestCase):
             'Sofa': fun.Sofa(8, 18),
         }
         test_room = Room(50, 50, 5, furniture_dict=furniture_dict)
-        self.assertEqual(
-            evals.punish_for_too_big_spectator_angle(test_room), 15)
+        self.assertEqual(evals.punish_for_too_big_spectator_angle(test_room), 10)
+
+        flip(furniture_dict['TV'].figure)
+        flip(furniture_dict['Sofa'].figure)
+        self.assertEqual(evals.punish_for_too_big_spectator_angle(test_room), 10)
 
     def test_carpet_intersection(self):
         """In this test only one item (from 2) is not allowed to intersect
@@ -111,8 +118,7 @@ class TestRoomEvaluator(unittest.TestCase):
             'Desk': fun.Desk(-20, 5)
         }
         test_room = Room(50, 50, 5, furniture_dict=furniture_dict)
-        self.assertEqual(
-            evals.punish_for_carpet_intersection(test_room), 10)
+        self.assertEqual(evals.punish_for_carpet_intersection(test_room), 10)
 
     def test_big_carpet(self):
         """In this test we are checking carpet field."""
