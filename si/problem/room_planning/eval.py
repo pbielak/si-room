@@ -45,7 +45,6 @@ def punish_for_chairs_placement(room):
     return penalty
 
 
-# TODO: degrees above allowed angle will be better penalty?
 def punish_for_too_big_spectator_angle(room):
     penalty = 0
     tv = room.furniture['TV']
@@ -58,7 +57,6 @@ def punish_for_too_big_spectator_angle(room):
     return penalty
 
 
-# TODO; penalty like furniture intersections?
 def punish_for_carpet_intersection(room):
     penalty = 0
     carpet_rectangle = geom.Rectangle(0, 0,
