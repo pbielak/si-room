@@ -65,7 +65,7 @@ class BatAlgorithm(base.SwarmIntelligenceAlgorithm):
         x += 1e-6 * utils.uniform(-1, 1, self.nb_dim)
 
         if utils.uniform(0, 1, 1) < ind.A \
-            and self.eval_fn(*x) < self.eval_fn(*self.best_x):
+            and self.eval_fn(x) < self.eval_fn(self.best_x):
             ind.x = x
 
         ind.A = max(self.options.A_min, self.options.alpha * ind.A)

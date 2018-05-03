@@ -2,21 +2,39 @@ import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 
 from si.gui import base
-from si.problem.room_planning.room import Room, load_default_room_furniture
+from si.problem.room_planning import eval
+from si.problem.room_planning import room as room_problem
 
 
 class RoomGUI(base.GUI):
 
     def __init__(self, room):
         self.room = room
+
+        self.avg_result_ax = None
+        self.avg_results_x = []
+        self.avg_results_y = []
+
         self._init_draw()
 
     def _init_draw(self):
-        fig = plt.figure(figsize=(7, 7))
-        self.room_ax = fig.add_subplot(111)
+        plt.ion()
+        fig = plt.figure(figsize=(14, 7))
+        self.room_ax = fig.add_subplot(121)
         self.color_map = plt.cm.get_cmap('hsv', 10)
 
+        self.avg_result_ax = fig.add_subplot(122)
+
+        self.avg_result_ax.set_title('Avg result')
+        self.avg_result_ax.plot(0, 0)
+        self.avg_result_ax.set_xlabel('Iteration')
+        self.avg_result_ax.set_ylabel('Avg result')
+
     def draw(self):
+        self._draw()
+        plt.show()
+
+    def _draw(self):
         self.room_ax.clear()
 
         room_bb = self.room.bounding_box
@@ -48,7 +66,7 @@ class RoomGUI(base.GUI):
         )
 
         # furniture
-        for idx, f in enumerate(self.room.furniture):
+        for idx, f in enumerate(sorted(self.room.furniture.values(), key=lambda x: type(x).__name__)):
             fg = f.figure
             self.room_ax.add_patch(
                 patches.Rectangle(
@@ -60,16 +78,20 @@ class RoomGUI(base.GUI):
                     alpha=0.8
                 )
             )
-            plt.text(f.figure.xmin, f.figure.ymin, type(f).__name__)
-
-        plt.show()
+            self.room_ax.text(f.figure.xmin, f.figure.ymin, type(f).__name__)
 
     def update_points(self, iteration, swarm, best_x):
-        pass
 
+        self.room = room_problem.solution_to_room(best_x, self.room)
+        self._draw()
 
-# Test drawer
-if __name__ == '__main__':
-    r = Room(40, 40, load_default_room_furniture(), 3)
-    rd = RoomGUI(r)
-    rd.draw()
+        eval_fn = lambda p: 1.0 / eval.evaluate_room(
+                                room_problem.solution_to_room(p.x, self.room))
+        avg_result = sum(map(eval_fn, swarm)) / len(swarm)
+        self.avg_results_x.append(iteration)
+        self.avg_results_y.append(avg_result)
+        self.avg_result_ax.plot(self.avg_results_x,
+                                self.avg_results_y,
+                                color='g')
+
+        plt.pause(0.0001)
