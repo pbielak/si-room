@@ -95,7 +95,7 @@ class TestRoomEvaluator(unittest.TestCase):
 
         furniture_dict = {
             'TV': fun.TV(4, 14),
-            'Sofa': fun.Sofa(8, 18),
+            'Sofa': fun.Sofa(8, 18)
         }
         self.room.furniture = furniture_dict
         self.assertEqual(evals.punish_for_too_big_spectator_angle(self.room), 100)
