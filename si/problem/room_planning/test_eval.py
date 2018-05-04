@@ -11,6 +11,10 @@ class TestRoomEvaluator(unittest.TestCase):
     def setUp(self):
         self.room = Room(50, 50)
 
+    def set_furniture(self, furniture_dict):
+        self.room.furniture = furniture_dict
+        self.room.update_carpet_size()
+
     def test_intersections_exist(self):
         """In this test 5 items should intersect."""
 
@@ -26,8 +30,9 @@ class TestRoomEvaluator(unittest.TestCase):
             'Chair4': fun.Chair(15, 15),
             'Desk': fun.Desk(-20, 5)
         }
-        self.room.furniture = furniture_dict
-        self.assertEqual(evals.punish_for_intersections(self.room), 800)
+        self.set_furniture(furniture_dict)
+        actual_reward = evals.reward_for_intersections(self.room)
+        self.assertAlmostEqual(actual_reward, -892.5, delta=0.01)
 
     def test_no_intersections_exist(self):
         """In this test any item should not intersect."""
@@ -44,8 +49,9 @@ class TestRoomEvaluator(unittest.TestCase):
             'Chair4': fun.Chair(16, 15),
             'Desk': fun.Desk(-20, 5)
         }
-        self.room.furniture = furniture_dict
-        self.assertEqual(evals.punish_for_intersections(self.room), 0)
+        self.set_furniture(furniture_dict)
+        actual_reward = evals.reward_for_intersections(self.room)
+        self.assertAlmostEqual(actual_reward, 0, delta=0.01)
 
     def test_chairs_far_from_table(self):
         """In this test two chairs are far from the table."""
@@ -57,9 +63,9 @@ class TestRoomEvaluator(unittest.TestCase):
             'Chair3': fun.Chair(1, 1),
             'Chair4': fun.Chair(16, 15)
         }
-        self.room.furniture = furniture_dict
-        self.assertAlmostEqual(
-            evals.punish_for_chairs_placement(self.room), 54.2, delta=0.01)
+        self.set_furniture(furniture_dict)
+        actual_reward = evals.reward_for_chairs_placement(self.room)
+        self.assertAlmostEqual(actual_reward, -54.2, delta=0.01)
 
     def test_chairs_near_table(self):
         """All chairs are near the table center."""
@@ -71,9 +77,9 @@ class TestRoomEvaluator(unittest.TestCase):
             'Chair3': fun.Chair(-12, -3),
             'Chair4': fun.Chair(-8, -3)
         }
-        self.room.furniture = furniture_dict
-        self.assertAlmostEqual(
-            evals.punish_for_chairs_placement(self.room), 29.12, delta=0.01)
+        self.set_furniture(furniture_dict)
+        actual_reward = evals.reward_for_chairs_placement(self.room)
+        self.assertAlmostEqual(actual_reward, -29.12, delta=0.01)
 
     def test_correct_spectator_angle(self):
         """In this test spectator angle is smaller than 30 degrees."""
@@ -83,12 +89,14 @@ class TestRoomEvaluator(unittest.TestCase):
             'Sofa': fun.Sofa(8, 18)
         }
 
-        self.room.furniture = furniture_dict
-        self.assertEqual(evals.punish_for_too_big_spectator_angle(self.room), 0)
+        self.set_furniture(furniture_dict)
+        actual_reward = evals.reward_for_tv_sofa_angle(self.room)
+        self.assertAlmostEqual(actual_reward, 0, delta=0.01)
 
         flip(furniture_dict['TV'].figure)
         flip(furniture_dict['Sofa'].figure)
-        self.assertEqual(evals.punish_for_too_big_spectator_angle(self.room), 0)
+        actual_reward = evals.reward_for_tv_sofa_angle(self.room)
+        self.assertAlmostEqual(actual_reward, 0, delta=0.01)
 
     def test_too_big_spectator_angle(self):
         """In this test spectator angle is bigger than 30 degrees."""
@@ -97,12 +105,27 @@ class TestRoomEvaluator(unittest.TestCase):
             'TV': fun.TV(4, 14),
             'Sofa': fun.Sofa(8, 18)
         }
-        self.room.furniture = furniture_dict
-        self.assertEqual(evals.punish_for_too_big_spectator_angle(self.room), 100)
+        self.set_furniture(furniture_dict)
+        actual_reward = evals.reward_for_tv_sofa_angle(self.room)
+        self.assertAlmostEqual(actual_reward, -900.0, delta=0.01)
 
         flip(furniture_dict['TV'].figure)
         flip(furniture_dict['Sofa'].figure)
-        self.assertEqual(evals.punish_for_too_big_spectator_angle(self.room), 100)
+        actual_reward = evals.reward_for_tv_sofa_angle(self.room)
+        self.assertAlmostEqual(actual_reward, -900.0, delta=0.01)
+
+    def test_reward_for_furniture_outside_room(self):
+        """Test if there is an appropriate reward/penalty for furniture
+           that doesn't fit into the room.
+        """
+
+        furniture_dict = {
+            'Sofa': fun.Sofa(30, 0)
+        }
+        self.set_furniture(furniture_dict)
+
+        actual_reward = evals.reward_for_furniture_inside_room(self.room)
+        self.assertEqual(actual_reward, -50)
 
 
 # Test runner

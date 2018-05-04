@@ -17,7 +17,7 @@ class Room(object):
             furniture_classes = load_default_room_furniture()
 
         self.furniture = self._init_furniture(furniture_classes)
-        self.calc_carpet_size()
+        self.update_carpet_size()
 
     def _init_furniture(self, furniture_classes):
         furniture = {}
@@ -45,7 +45,7 @@ class Room(object):
 
         return furniture
 
-    def calc_carpet_size(self):
+    def update_carpet_size(self):
         furniture = list(map(lambda x: x.figure,
                              filter(lambda x: not x.carpet,
                                     self.furniture.values())))
@@ -127,5 +127,5 @@ def solution_to_room(solution, old_room):
     f['Desk'].figure.x = solution[18]
     f['Desk'].figure.y = solution[19]
 
-    room.calc_carpet_size()
+    room.update_carpet_size()
     return room
