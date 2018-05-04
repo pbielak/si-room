@@ -5,6 +5,7 @@ import numpy as np
 from copy import deepcopy
 
 from si.problem.room_planning import furniture as fun, geometry as geom
+from si.problem.room_planning.furniture import WINDOW_WIDTH, DOOR_HEIGHT
 
 
 class Room(object):
@@ -21,6 +22,10 @@ class Room(object):
     def _init_furniture(self, furniture_classes):
         furniture = {}
         for f_name, f_cls in furniture_classes.items():
+
+            if f_name == 'Window' or f_name == 'Door':
+                continue
+
             x = np.random.uniform(self.bounding_box.xmin,
                                   self.bounding_box.xmax)
             y = np.random.uniform(self.bounding_box.ymin,
@@ -31,6 +36,13 @@ class Room(object):
                 geom.move_inside(f.figure, self.bounding_box)
 
             furniture[f_name] = f
+
+        # setup door and window positions
+        furniture['Window'] = fun.Window(
+            -self.bounding_box.width / 2 + WINDOW_WIDTH / 2, 0)
+        furniture['Door'] = fun.Door(
+            0, self.bounding_box.height / 2 - DOOR_HEIGHT / 2)
+
         return furniture
 
     def calc_carpet_size(self):
@@ -73,7 +85,9 @@ def load_default_room_furniture():
         'Chair2': fun.Chair,
         'Chair3': fun.Chair,
         'Chair4': fun.Chair,
-        'Desk': fun.Desk
+        'Desk': fun.Desk,
+        'Window': fun.Window,
+        'Door': fun.Door,
     }
     return furniture_classes
 

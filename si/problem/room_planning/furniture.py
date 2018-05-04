@@ -3,6 +3,9 @@ Module for furniture definition
 """
 from si.problem.room_planning import geometry as geom
 
+WINDOW_WIDTH = 2
+DOOR_HEIGHT = 4
+
 
 class Furniture(object):
     def __init__(self, x, y, width, height, carpet):
@@ -47,3 +50,12 @@ class Chair(Furniture):
     def __init__(self, x, y):
         super(Chair, self).__init__(x, y, width=2.5, height=2.5, carpet=True)
 
+
+class Window(Furniture):
+    def __init__(self, x, y):
+        super(Window, self).__init__(x, y, width=WINDOW_WIDTH, height=10, carpet=True)
+
+
+class Door(Furniture):
+    def __init__(self, x, y):
+        super(Door, self).__init__(x, y, width=8, height=DOOR_HEIGHT, carpet=True)
