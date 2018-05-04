@@ -21,7 +21,7 @@ class RoomGUI(base.GUI):
         plt.ion()
         fig = plt.figure(figsize=(14, 7))
         self.room_ax = fig.add_subplot(121)
-        self.color_map = plt.cm.get_cmap('hsv', 10)
+        self.color_map = plt.cm.get_cmap('hsv', 12)
 
         self.avg_result_ax = fig.add_subplot(122)
 
@@ -66,16 +66,28 @@ class RoomGUI(base.GUI):
         )
 
         # furniture
-        for idx, f in enumerate(sorted(self.room.furniture.values(), key=lambda x: type(x).__name__)):
+        for idx, f in enumerate(sorted(self.room.furniture.values(),
+                                       key=lambda x: type(x).__name__)):
+            if type(f).__name__ in ('Window', 'Door'):
+                patch_kwargs = dict(
+                    linewidth=1,
+                    hatch='\\',
+                    fill=False
+                )
+            else:
+                patch_kwargs = dict(
+                    linewidth=1,
+                    color=self.color_map(idx),
+                    alpha=0.8
+                )
+
             fg = f.figure
             self.room_ax.add_patch(
                 patches.Rectangle(
                     (fg.xmin, fg.ymin),
                     fg.width,
                     fg.height,
-                    linewidth=1,
-                    color=self.color_map(idx),
-                    alpha=0.8
+                    **patch_kwargs
                 )
             )
             self.room_ax.text(f.figure.xmin, f.figure.ymin, type(f).__name__)
