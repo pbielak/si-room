@@ -27,7 +27,8 @@ class TestRoomEvaluator(unittest.TestCase):
             'Desk': fun.Desk(-20, 5)
         }
         self.room.furniture = furniture_dict
-        self.assertEqual(evals.punish_for_intersections(self.room), 800)
+        self.assertAlmostEqual(
+            evals.punish_for_intersections(self.room), 892.5, delta=0.01)
 
     def test_no_intersections_exist(self):
         """In this test any item should not intersect."""
@@ -45,7 +46,8 @@ class TestRoomEvaluator(unittest.TestCase):
             'Desk': fun.Desk(-20, 5)
         }
         self.room.furniture = furniture_dict
-        self.assertEqual(evals.punish_for_intersections(self.room), 0)
+        self.assertAlmostEqual(
+            evals.punish_for_intersections(self.room), 0, delta=0.01)
 
     def test_chairs_far_from_table(self):
         """In this test two chairs are far from the table."""
@@ -84,11 +86,13 @@ class TestRoomEvaluator(unittest.TestCase):
         }
 
         self.room.furniture = furniture_dict
-        self.assertEqual(evals.punish_for_too_big_spectator_angle(self.room), 0)
+        self.assertAlmostEqual(
+            evals.punish_for_too_big_spectator_angle(self.room), 0, delta=0.01)
 
         flip(furniture_dict['TV'].figure)
         flip(furniture_dict['Sofa'].figure)
-        self.assertEqual(evals.punish_for_too_big_spectator_angle(self.room), 0)
+        self.assertAlmostEqual(
+            evals.punish_for_too_big_spectator_angle(self.room), 0, delta=0.01)
 
     def test_too_big_spectator_angle(self):
         """In this test spectator angle is bigger than 30 degrees."""
@@ -98,11 +102,14 @@ class TestRoomEvaluator(unittest.TestCase):
             'Sofa': fun.Sofa(8, 18),
         }
         self.room.furniture = furniture_dict
-        self.assertEqual(evals.punish_for_too_big_spectator_angle(self.room), 100)
+        self.assertAlmostEqual(
+            evals.punish_for_too_big_spectator_angle(self.room), 900.0, delta=0.01)
 
         flip(furniture_dict['TV'].figure)
         flip(furniture_dict['Sofa'].figure)
-        self.assertEqual(evals.punish_for_too_big_spectator_angle(self.room), 100)
+        self.assertAlmostEqual(
+            evals.punish_for_too_big_spectator_angle(self.room), 900.0,
+            delta=0.01)
 
 
 # Test runner
