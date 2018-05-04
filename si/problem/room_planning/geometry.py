@@ -82,3 +82,7 @@ def angle(r1, r2):
     else:
         raise Exception("Can't compute angle for furniture"
                         " with different flips!")
+
+
+def area(r):
+    return r.width * r.height
