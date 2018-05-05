@@ -7,28 +7,16 @@ import numpy as np
 from si.gui import base
 
 
-class FunctionGUI(base.GUI):
+class FunctionGUI(base.GUIWithSummaryPlot):
     def __init__(self, eval_fn, val_bounds, restricted):
+        super(FunctionGUI, self).__init__(eval_fn)
         self.val_bounds = val_bounds
-        self.eval_fn = eval_fn
         self.restricted = restricted
 
-        self.contour_ax = None
+        self.contour_ax = self.fig.add_subplot(121)
         self.marker_points = None
 
-        self.avg_result_ax = None
-        self.avg_results_x = []
-        self.avg_results_y = []
-
-        self._setup()
-
-    def _setup(self):
-        plt.ion()
-        fig = plt.figure(figsize=(14, 7))
-        self.contour_ax = fig.add_subplot(121)
-        self.avg_result_ax = fig.add_subplot(122)
-
-    def draw(self):
+    def _draw(self):
         X = np.arange(self.val_bounds[0], self.val_bounds[1], 0.1)
         Y = np.arange(self.val_bounds[0], self.val_bounds[1], 0.1)
 
@@ -49,28 +37,8 @@ class FunctionGUI(base.GUI):
                                                   marker='x', ms=10,
                                                   linestyle='')[0]
 
-        self.avg_result_ax.set_title('Avg result')
-        self.avg_result_ax.plot(0, 0)
-        self.avg_result_ax.set_xlabel('Iteration')
-        self.avg_result_ax.set_ylabel('Avg result')
-        plt.show()
-
     def update_points(self, iteration, swarm, best_x):
-        avg_result = sum(map(lambda p: self.eval_fn(p.x), swarm)) / len(swarm)
-        self.avg_results_x.append(iteration)
-        self.avg_results_y.append(avg_result)
-        self.avg_result_ax.plot(self.avg_results_x,
-                                self.avg_results_y,
-                                color='g')
-
-        msg = 'Iteration: {} \n' \
-              '(current best: {} => {})\n' \
-              'Avg result: {}'.format(
-            iteration, np.round(best_x, 2),
-            np.round(self.eval_fn(best_x), 2),
-            np.round(avg_result, 2)
-        )
-        self.contour_ax.set_title(msg)
+        super(FunctionGUI, self).update_points(iteration, swarm, best_x)
 
         swarm_points = np.array(list(map(lambda ind: ind.x, swarm)))
         swarm_points = np.split(swarm_points, 2, axis=1)

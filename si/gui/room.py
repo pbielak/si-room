@@ -5,34 +5,13 @@ from si.gui import base
 from si.problem.room_planning import room as room_problem
 
 
-class RoomGUI(base.GUI):
+class RoomGUI(base.GUIWithSummaryPlot):
 
     def __init__(self, room, eval_fn):
+        super(RoomGUI, self).__init__(eval_fn)
         self.room = room
-        self.eval_fn = eval_fn
-
-        self.avg_result_ax = None
-        self.avg_results_x = []
-        self.avg_results_y = []
-
-        self._init_draw()
-
-    def _init_draw(self):
-        plt.ion()
-        fig = plt.figure(figsize=(14, 7))
-        self.room_ax = fig.add_subplot(121)
+        self.room_ax = self.fig.add_subplot(121)
         self.color_map = plt.cm.get_cmap('hsv', 12)
-
-        self.avg_result_ax = fig.add_subplot(122)
-
-        self.avg_result_ax.set_title('Avg result')
-        self.avg_result_ax.plot(0, 0)
-        self.avg_result_ax.set_xlabel('Iteration')
-        self.avg_result_ax.set_ylabel('Avg result')
-
-    def draw(self):
-        self._draw()
-        plt.show()
 
     def _draw(self):
         self.room_ax.clear()
@@ -93,15 +72,9 @@ class RoomGUI(base.GUI):
             self.room_ax.text(f.figure.xmin, f.figure.ymin, type(f).__name__)
 
     def update_points(self, iteration, swarm, best_x):
+        super(RoomGUI, self).update_points(iteration, swarm, best_x)
 
         self.room = room_problem.solution_to_room(best_x, self.room)
         self._draw()
-
-        avg_result = sum(map(lambda p: self.eval_fn(p.x), swarm)) / len(swarm)
-        self.avg_results_x.append(iteration)
-        self.avg_results_y.append(avg_result)
-        self.avg_result_ax.plot(self.avg_results_x,
-                                self.avg_results_y,
-                                color='g')
 
         plt.pause(0.0001)
