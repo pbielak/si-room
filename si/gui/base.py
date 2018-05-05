@@ -6,8 +6,9 @@ import numpy as np
 
 
 class GUI(object):
-    def __init__(self, eval_fn):
+    def __init__(self, eval_fn, draw_bounds):
         self.eval_fn = eval_fn
+        self.draw_bounds = draw_bounds
         self.fig = None
         self._setup()
 
@@ -27,13 +28,13 @@ class GUI(object):
 
 
 class GUIWithSummaryPlot(GUI):
-    def __init__(self, eval_fn):
+    def __init__(self, eval_fn, draw_bounds):
         self.summary_ax = None
         self.summary_x = []
         self.avg_results_y = []
         self.best_result_y = []
 
-        super(GUIWithSummaryPlot, self).__init__(eval_fn)
+        super(GUIWithSummaryPlot, self).__init__(eval_fn, draw_bounds)
 
     def _setup(self):
         super(GUIWithSummaryPlot, self)._setup()

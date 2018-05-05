@@ -7,8 +7,8 @@ from si.problem.room_planning import room as room_problem
 
 class RoomGUI(base.GUIWithSummaryPlot):
 
-    def __init__(self, room, eval_fn):
-        super(RoomGUI, self).__init__(eval_fn)
+    def __init__(self, eval_fn, draw_bounds, room):
+        super(RoomGUI, self).__init__(eval_fn, draw_bounds)
         self.room = room
         self.room_ax = self.fig.add_subplot(121)
         self.color_map = plt.cm.get_cmap('hsv', 12)
@@ -16,10 +16,11 @@ class RoomGUI(base.GUIWithSummaryPlot):
     def _draw(self):
         self.room_ax.clear()
 
-        room_bb = self.room.bounding_box
+        min_val, max_val = self.draw_bounds
+        self.room_ax.set_xlim(min_val, max_val)
+        self.room_ax.set_ylim(min_val, max_val)
 
-        self.room_ax.set_xlim(room_bb.xmin, room_bb.xmax)
-        self.room_ax.set_ylim(room_bb.ymin, room_bb.ymax)
+        room_bb = self.room.bounding_box
 
         # room walls
         self.room_ax.add_patch(

@@ -43,16 +43,17 @@ def get_bat(common_options):
 
 
 def get_rastrigin_problem():
+    fn_val_bounds = (-3, 3)#(-5.12, 5.12)
     eval_fn = lambda x: rastrigin.rastrigin_fn(*x)
 
     gui = function.FunctionGUI(eval_fn=eval_fn,
-                               val_bounds=(-5.12, 5.12),
-                               restricted=2)
+                               draw_bounds=(-5.12, 5.12),
+                               val_bounds=fn_val_bounds)
 
     common_options = dict(eval_fn=eval_fn,
                           update_gui_callback=gui.update_points,
                           is_solution_better_cmp=base.minimization_problem_cmp(),
-                          nb_dim=2, val_bounds=(-5.12, 5.12),
+                          nb_dim=2, val_bounds=fn_val_bounds,
                           swarm_size=30)
 
     return gui, eval_fn, common_options
@@ -62,8 +63,9 @@ def get_room_problem():
     eval_fn = lambda x: rp_eval.evaluate_room(
         rp_room.solution_to_room(x, rp_room.Room(40, 40)))
 
-    gui = room_gui.RoomGUI(room=rp_room.Room(40, 40),
-                           eval_fn=eval_fn)
+    gui = room_gui.RoomGUI(eval_fn=eval_fn,
+                           draw_bounds=(-25, 25),
+                           room=rp_room.Room(40, 40))
 
     common_options = dict(eval_fn=eval_fn,
                           update_gui_callback=gui.update_points,
@@ -87,8 +89,8 @@ def run_algorithm(problem_fn, alg_fn, nb_iterations):
 
 
 def main():
-    # run_algorithm(get_rastrigin_problem, get_pso, 175)
-    run_algorithm(get_room_problem, get_pso, 175)
+    run_algorithm(get_rastrigin_problem, get_pso, 175)
+    # run_algorithm(get_room_problem, get_pso, 175)
 
 
 if __name__ == '__main__':

@@ -8,17 +8,16 @@ from si.gui import base
 
 
 class FunctionGUI(base.GUIWithSummaryPlot):
-    def __init__(self, eval_fn, val_bounds, restricted):
-        super(FunctionGUI, self).__init__(eval_fn)
+    def __init__(self, eval_fn, draw_bounds, val_bounds):
+        super(FunctionGUI, self).__init__(eval_fn, draw_bounds)
         self.val_bounds = val_bounds
-        self.restricted = restricted
 
         self.contour_ax = self.fig.add_subplot(121)
         self.marker_points = None
 
     def _draw(self):
-        X = np.arange(self.val_bounds[0], self.val_bounds[1], 0.1)
-        Y = np.arange(self.val_bounds[0], self.val_bounds[1], 0.1)
+        X = np.arange(self.draw_bounds[0], self.draw_bounds[1], 0.1)
+        Y = np.arange(self.draw_bounds[0], self.draw_bounds[1], 0.1)
 
         X, Y = np.meshgrid(X, Y)
 
@@ -26,11 +25,14 @@ class FunctionGUI(base.GUIWithSummaryPlot):
 
         self.contour_ax.contour(X, Y, Z, cmap=cm.coolwarm)
 
-        if self.restricted:
-            x = self.restricted
+        if self.val_bounds:
+            min_val, max_val = self.val_bounds
+            x = max_val - min_val
             self.contour_ax.add_patch(
-                patches.Rectangle(xy=(-x, -x), width=2*x,
-                                  height=2*x, fill=False)
+                patches.Rectangle(xy=(min_val, min_val),
+                                  width=x,
+                                  height=x,
+                                  fill=False)
             )
 
         self.marker_points = self.contour_ax.plot(1, 1, color='black',
