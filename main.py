@@ -1,6 +1,8 @@
 """
 Visualize function and update
 """
+from datetime import datetime
+
 import matplotlib.pyplot as plt
 
 from si.algorithm import base
@@ -76,7 +78,22 @@ def get_room_problem():
     return gui, eval_fn, common_options
 
 
-def run_algorithm(problem_fn, alg_fn, nb_iterations):
+def save_results(gui):
+    current_time = str(datetime.now()).replace(' ', '_') \
+        .replace('.', '_') \
+        .replace(':', '_')
+
+    filename = 'out_files/{}_{}.txt'.format(gui.__class__.__name__, current_time)
+
+    with open(filename, 'w') as out_file:
+        avg_results = ' '.join(map(lambda x: str(x), gui.avg_results_y))
+        best_results = ' '.join(map(lambda x: str(x), gui.best_result_y))
+
+        out_file.write(avg_results + '\n')
+        out_file.write(best_results + '\n')
+
+
+def run_algorithm(problem_fn, alg_fn, nb_iterations, save_summary_results):
     gui, eval_fn, common_options = problem_fn()
     gui.draw()
 
@@ -87,10 +104,13 @@ def run_algorithm(problem_fn, alg_fn, nb_iterations):
     fmt_str = 'Best solution {} => {}'
     print(fmt_str.format(alg.best_x, eval_fn(alg.best_x)))
 
+    if save_summary_results:
+        save_results(gui)
+
 
 def main():
-    # run_algorithm(get_rastrigin_problem, get_pso, 175)
-    run_algorithm(get_room_problem, get_pso, 175)
+    run_algorithm(get_rastrigin_problem, get_pso, 175, True)
+    # run_algorithm(get_room_problem, get_pso, 175, True)
 
 
 if __name__ == '__main__':
