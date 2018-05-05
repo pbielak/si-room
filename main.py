@@ -89,8 +89,8 @@ def run_algorithm(problem_fn, alg_fn, nb_iterations):
 
 
 def main():
-    run_algorithm(get_rastrigin_problem, get_pso, 175)
-    # run_algorithm(get_room_problem, get_pso, 175)
+    # run_algorithm(get_rastrigin_problem, get_pso, 175)
+    run_algorithm(get_room_problem, get_pso, 175)
 
 
 if __name__ == '__main__':
