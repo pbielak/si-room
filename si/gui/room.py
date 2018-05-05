@@ -2,45 +2,25 @@ import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 
 from si.gui import base
-from si.problem.room_planning import eval
 from si.problem.room_planning import room as room_problem
 
 
-class RoomGUI(base.GUI):
+class RoomGUI(base.GUIWithSummaryPlot):
 
-    def __init__(self, room):
+    def __init__(self, eval_fn, draw_bounds, room):
+        super(RoomGUI, self).__init__(eval_fn, draw_bounds)
         self.room = room
-
-        self.avg_result_ax = None
-        self.avg_results_x = []
-        self.avg_results_y = []
-
-        self._init_draw()
-
-    def _init_draw(self):
-        plt.ion()
-        fig = plt.figure(figsize=(14, 7))
-        self.room_ax = fig.add_subplot(121)
+        self.room_ax = self.fig.add_subplot(121)
         self.color_map = plt.cm.get_cmap('hsv', 12)
-
-        self.avg_result_ax = fig.add_subplot(122)
-
-        self.avg_result_ax.set_title('Avg result')
-        self.avg_result_ax.plot(0, 0)
-        self.avg_result_ax.set_xlabel('Iteration')
-        self.avg_result_ax.set_ylabel('Avg result')
-
-    def draw(self):
-        self._draw()
-        plt.show()
 
     def _draw(self):
         self.room_ax.clear()
 
-        room_bb = self.room.bounding_box
+        min_val, max_val = self.draw_bounds
+        self.room_ax.set_xlim(min_val, max_val)
+        self.room_ax.set_ylim(min_val, max_val)
 
-        self.room_ax.set_xlim(room_bb.xmin, room_bb.xmax)
-        self.room_ax.set_ylim(room_bb.ymin, room_bb.ymax)
+        room_bb = self.room.bounding_box
 
         # room walls
         self.room_ax.add_patch(
@@ -93,17 +73,9 @@ class RoomGUI(base.GUI):
             self.room_ax.text(f.figure.xmin, f.figure.ymin, type(f).__name__)
 
     def update_points(self, iteration, swarm, best_x):
+        super(RoomGUI, self).update_points(iteration, swarm, best_x)
 
         self.room = room_problem.solution_to_room(best_x, self.room)
         self._draw()
-
-        eval_fn = lambda p: 1.0 / eval.evaluate_room(
-                                room_problem.solution_to_room(p.x, self.room))
-        avg_result = sum(map(eval_fn, swarm)) / len(swarm)
-        self.avg_results_x.append(iteration)
-        self.avg_results_y.append(avg_result)
-        self.avg_result_ax.plot(self.avg_results_x,
-                                self.avg_results_y,
-                                color='g')
 
         plt.pause(0.0001)

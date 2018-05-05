@@ -4,6 +4,14 @@ Base classes for algorithm
 import numpy as np
 
 
+def minimization_problem_cmp():
+    return lambda x, y: x < y
+
+
+def maximization_problem_cmp():
+    return lambda x, y: x > y
+
+
 class Individual(object):
     def __init__(self, x):
         self.x = x
@@ -13,9 +21,10 @@ class Individual(object):
 
 
 class SwarmIntelligenceAlgorithm(object):
-    def __init__(self, eval_fn, update_gui_callback,
+    def __init__(self, eval_fn, is_solution_better_cmp, update_gui_callback,
                  swarm_size, val_bounds, nb_dim, options):
         self.eval_fn = eval_fn
+        self.is_solution_better_cmp = is_solution_better_cmp
         self.update_gui_callback = update_gui_callback
         self.swarm_size = swarm_size
         self.val_bounds = val_bounds
@@ -33,7 +42,8 @@ class SwarmIntelligenceAlgorithm(object):
             ind = self.get_random_individual()
             individuals.append(ind)
 
-            if self.eval_fn(ind.x) < self.eval_fn(self.best_x):
+            if self.is_solution_better_cmp(self.eval_fn(ind.x),
+                                           self.eval_fn(self.best_x)):
                 self.best_x = ind.x
 
         return individuals
@@ -52,7 +62,8 @@ class SwarmIntelligenceAlgorithm(object):
                                 self.val_bounds[0],
                                 self.val_bounds[1])
 
-                if self.eval_fn(ind.get_best()) < self.eval_fn(self.best_x):
+                if self.is_solution_better_cmp(self.eval_fn(ind.get_best()),
+                                               self.eval_fn(self.best_x)):
                     self.best_x = ind.get_best()
 
             self.update_gui(i)

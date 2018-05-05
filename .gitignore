@@ -102,3 +102,6 @@ ENV/
 
 # Pycharm
 .idea/
+
+# Custom
+out_files/*.txt

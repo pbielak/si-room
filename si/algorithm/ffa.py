@@ -24,9 +24,10 @@ FFAOptions = namedtuple('FFAOptions', ['alpha', 'beta_0', 'gamma'])
 
 
 class FireflyAlgorithm(base.SwarmIntelligenceAlgorithm):
-    def __init__(self, eval_fn, update_gui_callback,
+    def __init__(self, eval_fn, is_solution_better_cmp, update_gui_callback,
                  swarm_size, val_bounds, nb_dim, options):
-        super(FireflyAlgorithm, self).__init__(eval_fn, update_gui_callback,
+        super(FireflyAlgorithm, self).__init__(eval_fn, is_solution_better_cmp,
+                                               update_gui_callback,
                                                swarm_size, val_bounds, nb_dim,
                                                options)
 

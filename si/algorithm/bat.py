@@ -32,9 +32,10 @@ BatOptions = namedtuple('BatOptions', ['alpha', 'gamma', 'f_min', 'f_max',
 
 
 class BatAlgorithm(base.SwarmIntelligenceAlgorithm):
-    def __init__(self, eval_fn, update_gui_callback,
+    def __init__(self, eval_fn, is_solution_better_cmp, update_gui_callback,
                  swarm_size, val_bounds, nb_dim, options):
-        super(BatAlgorithm, self).__init__(eval_fn, update_gui_callback,
+        super(BatAlgorithm, self).__init__(eval_fn, is_solution_better_cmp,
+                                           update_gui_callback,
                                            swarm_size, val_bounds,
                                            nb_dim, options)
 
@@ -65,7 +66,8 @@ class BatAlgorithm(base.SwarmIntelligenceAlgorithm):
         x += 1e-6 * utils.uniform(-1, 1, self.nb_dim)
 
         if utils.uniform(0, 1, 1) < ind.A \
-            and self.eval_fn(x) < self.eval_fn(self.best_x):
+            and self.is_solution_better_cmp(self.eval_fn(x),
+                                            self.eval_fn(self.best_x)):
             ind.x = x
 
         ind.A = max(self.options.A_min, self.options.alpha * ind.A)

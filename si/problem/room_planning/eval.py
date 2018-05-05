@@ -5,12 +5,6 @@ import math
 
 import si.problem.room_planning.geometry as geom
 
-# ROOM PARAMETERS
-spectator_max_angle = 30
-
-# PENALTIES MULTIPLIERS VALUES
-penalty_multiplier = 20
-
 
 # REWARDS METHODS
 def reward_for_intersections(room):
@@ -19,8 +13,7 @@ def reward_for_intersections(room):
         for ff in room.furniture.values():
             if f != ff:
                 if geom.intersects(f.figure, ff.figure):
-                    reward -= penalty_multiplier * geom.overlapping_area(
-                        f.figure, ff.figure)
+                    reward -= geom.overlapping_area(f.figure, ff.figure)
             else:
                 continue
 
@@ -47,6 +40,7 @@ def reward_for_chairs_placement(room):
 
 def reward_for_tv_sofa_angle(room):
     ROT_ANGLE = 90
+    spectator_max_angle = 30
 
     reward = 0.0
     tv = room.furniture['TV']
@@ -56,7 +50,7 @@ def reward_for_tv_sofa_angle(room):
         current_angle = abs(geom.angle(tv.figure, sofa.figure))
         if current_angle >= ROT_ANGLE + spectator_max_angle / 2 \
                 or current_angle <= ROT_ANGLE - spectator_max_angle / 2:
-            reward -= penalty_multiplier * current_angle
+            reward -= current_angle
     return reward
 
 
@@ -66,24 +60,30 @@ def reward_for_furniture_inside_room(room):
     bb = room.bounding_box
     for f in room.furniture.values():
         if not geom.inside(f.figure, bb):
-            reward -= penalty_multiplier * (
-                geom.area(f.figure) - geom.overlapping_area(f.figure, bb))
+            reward -= geom.area(f.figure) - geom.overlapping_area(f.figure, bb)
 
     return reward
 
 
 def reward_for_carpet_size(room):
-    return math.pi * room.carpet_radius ** 2
+    carpet_area = math.pi * room.carpet_radius ** 2
+    room_area = geom.area(room.bounding_box)
+    return carpet_area / room_area
 
 
 # FINAL EVAL
-def evaluate_room(room):
+def evaluate_room(room,
+                  intersections_weight=0.3,
+                  chairs_table_weight=0.1,
+                  tv_sofa_weight=0.1,
+                  inside_room_weight=0.4,
+                  carpet_weight=0.1):
     """Should take an Room object and calculate the fitness (real number).
     Bigger value = better value."""
     total_reward = 0.0
-    total_reward += reward_for_intersections(room)
-    total_reward += reward_for_chairs_placement(room)
-    total_reward += reward_for_tv_sofa_angle(room)
-    total_reward += reward_for_furniture_inside_room(room)
-    total_reward += reward_for_carpet_size(room)
+    total_reward += intersections_weight * reward_for_intersections(room)
+    total_reward += chairs_table_weight * reward_for_chairs_placement(room)
+    total_reward += tv_sofa_weight * reward_for_tv_sofa_angle(room)
+    total_reward += inside_room_weight * reward_for_furniture_inside_room(room)
+    total_reward += carpet_weight * reward_for_carpet_size(room)
     return total_reward
