@@ -2,14 +2,14 @@ import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 
 from si.gui import base
-from si.problem.room_planning import eval
 from si.problem.room_planning import room as room_problem
 
 
 class RoomGUI(base.GUI):
 
-    def __init__(self, room):
+    def __init__(self, room, eval_fn):
         self.room = room
+        self.eval_fn = eval_fn
 
         self.avg_result_ax = None
         self.avg_results_x = []
@@ -97,9 +97,7 @@ class RoomGUI(base.GUI):
         self.room = room_problem.solution_to_room(best_x, self.room)
         self._draw()
 
-        eval_fn = lambda p: 1.0 / eval.evaluate_room(
-                                room_problem.solution_to_room(p.x, self.room))
-        avg_result = sum(map(eval_fn, swarm)) / len(swarm)
+        avg_result = sum(map(lambda p: self.eval_fn(p.x), swarm)) / len(swarm)
         self.avg_results_x.append(iteration)
         self.avg_results_y.append(avg_result)
         self.avg_result_ax.plot(self.avg_results_x,

@@ -26,9 +26,10 @@ PSOOptions = namedtuple('PSOOptions', ['omega', 'phi_p', 'phi_g'])
 
 
 class ParticleSwarmOptimization(base.SwarmIntelligenceAlgorithm):
-    def __init__(self, eval_fn, update_gui_callback,
+    def __init__(self, eval_fn, is_solution_better_cmp, update_gui_callback,
                  swarm_size, val_bounds, nb_dim, options):
         super(ParticleSwarmOptimization, self).__init__(eval_fn,
+                                                        is_solution_better_cmp,
                                                         update_gui_callback,
                                                         swarm_size, val_bounds,
                                                         nb_dim, options)
@@ -54,5 +55,6 @@ class ParticleSwarmOptimization(base.SwarmIntelligenceAlgorithm):
                         self.val_bounds[0],
                         self.val_bounds[1])
 
-        if self.eval_fn(ind.x) < self.eval_fn(ind.best_x):
+        if self.is_solution_better_cmp(self.eval_fn(ind.x),
+                                       self.eval_fn(ind.best_x)):
             ind.best_x = ind.x

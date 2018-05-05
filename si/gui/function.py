@@ -8,9 +8,9 @@ from si.gui import base
 
 
 class FunctionGUI(base.GUI):
-    def __init__(self, func, val_range, restricted):
-        self.val_range = val_range
-        self.eval_fn = func
+    def __init__(self, eval_fn, val_bounds, restricted):
+        self.val_bounds = val_bounds
+        self.eval_fn = eval_fn
         self.restricted = restricted
 
         self.contour_ax = None
@@ -29,8 +29,8 @@ class FunctionGUI(base.GUI):
         self.avg_result_ax = fig.add_subplot(122)
 
     def draw(self):
-        X = np.arange(self.val_range[0], self.val_range[1], 0.1)
-        Y = np.arange(self.val_range[0], self.val_range[1], 0.1)
+        X = np.arange(self.val_bounds[0], self.val_bounds[1], 0.1)
+        Y = np.arange(self.val_bounds[0], self.val_bounds[1], 0.1)
 
         X, Y = np.meshgrid(X, Y)
 
@@ -56,7 +56,7 @@ class FunctionGUI(base.GUI):
         plt.show()
 
     def update_points(self, iteration, swarm, best_x):
-        avg_result = sum(map(lambda p: self.eval_fn(*p.x), swarm)) / len(swarm)
+        avg_result = sum(map(lambda p: self.eval_fn(p.x), swarm)) / len(swarm)
         self.avg_results_x.append(iteration)
         self.avg_results_y.append(avg_result)
         self.avg_result_ax.plot(self.avg_results_x,
