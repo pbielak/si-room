@@ -1,6 +1,19 @@
 \pagebreak
 \section{Podsumowanie}
-
-% TODO:
-% 5. Podsumownie
-% [placeholdery]
+\begin{itemize}
+  \item{Dla problemu optymalizacji funkcji Rastrigina bez ograniczeń, najszybciej optymalne rozwiązania znajduje algorytm PSO (około 20 iteracji).
+        Algorytm FFA znajdował to rozwiązanie po 80 iteracjach, natomiast BAT po 110 iteracjach. Dodatkowo można zauważyć, że w PSO wszystkie osobniki
+        ostatecznie zbiegają do rozwiązania optymalnego. W przypadku BAT osiągają wartość bliską optimum, ale od pewnego momentu średnia ocena rozwiązań
+        zaczyna się pogarszać. Dla FFA część świetlików utyka w minimach lokalnych, co skutkuje gorszym średnim rozwiązaniem.}
+  \item{W przypadku wprowadzenia ograniczeń do funkcji Rastrigina, PSO zachowuje się dość podobnie (nieznaczny wpływ). Można zauważyć znaczny wpływ na
+        charakterystykę zbiegania algorytmu FFA -- średnie rozwiązanie jest lepsze, ale nadal występuje problem utykania w minimach lokalnych; dodatkowo
+        wcześniej jest znajdywane rozwiązanie optymalne -- po około 30 iteracjach. Dla algorytmu BAT można zauważyć wydłużenie czasu (liczby iteracji),
+        po których zostaje znalezione optimum.}
+  \item{Problem projektowania pokoju jest znacznie bardziej skomplikowany niż w przypadku funkcji Rastrigina. Dla algorytmów PSO oraz BAT można zauważyć,
+        że zarówno wartość oceny najlepszego rozwiązania i średniego rozwiązania wzrastają wykładniczo w zależności od liczby iteracji. Dodatkowo wszystkie
+        osobniki w algorytmie BAT zbiegają w końcu do najlepszego znalezionego rozwiązania. W przypadku algorytmu FFA widać, że najlepsze znalezione 
+        rozwiązanie jest gorsze niż w pozostałych algorytmach i wartość oceny średniego rozwiązania jest dość niska.}  
+  \item{Czas wykonywania pojedynczej iteracji był dość krótki (< 1s) w większości przypadków, jednak w trakcie badań problem pojawił się w algorytmie FFA
+        dla problemu projektowania pokoju. Średni czas pojedynczej iteracji był na poziomie 3-4 sekund. Można to tłumaczyć stosunkowo złożoną procedurą oceny
+        pokoju (funkcja oceny) w połączeniu ze złożonością algorytmu FFA -- $O(n^2)$ dla wewnętrznej pętli zależnej od liczby świetlików.}
+\end{itemize}
