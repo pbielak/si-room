@@ -1,0 +1,61 @@
+\section{Algorytmy}
+W ramach ćwiczenia zostały zaimplementowane i zbadane 3 algortymy inteligencji rojowej:
+\begin{itemize}
+  \item{PSO (Particle Swarm Optimization),}
+  \item{FFA (Firefly Algorithm),}
+  \item{BAT (Bat Algorithm).}
+\end{itemize}
+Dokładne opisy działania algorytmów są zawarte w \cite{pso, ffa, bat}. Poniżej zostały przedstawione parametry tych algorytmów.
+
+\begin{table}[H]
+  \center
+  \begin{tabular}{c|c|c}
+    \hline
+    \textbf{Nazwa parametru} & \textbf{Zakres wartości} & \textbf{Znaczenie} \\ \hline
+
+    swarm\_size & $\mathbb{N}$ & liczba osobników w roju \\ 
+    nb\_dim      & $\mathbb{N}$ & liczba wymiarów rozwiązania (wektor N-wymiarowy) \\
+    val\_bounds  & $(min, max): min, max \in \mathbb{R}$ & zakres wartości w każdym wymiarze rozwiązania \\
+    eval\_fn      & $f: \mathbb{R}^n \to \mathbb{R}$ & funkcja oceny danego rozwiązania \\ \hline
+  \end{tabular}
+  \caption{Wspólne parametry algorytmów.}
+\end{table}
+
+\begin{table}[H]
+  \center
+  \begin{tabular}{c|c}
+    \hline
+    \textbf{Nazwa parametru} & \textbf{Znaczenie} \\ \hline
+    $\omega$ (omega)  & współczynnik wpływu prędkości \\
+    $\phi_p$ (phi\_p) & współczynnik wpływu osobistego najlepszego rozwiązania \\
+    $\phi_g$ (phi\_g) & współczynnik wpływu globalnego najlepszego rozwiązania \\ \hline
+  \end{tabular}
+  \caption{Parametry algorytmu \textbf{PSO}.}
+\end{table}
+
+\begin{table}[H]
+  \center
+  \begin{tabular}{c|c}
+    \hline
+    \textbf{Nazwa parametru} & \textbf{Znaczenie} \\ \hline
+    $\alpha$ (alpha)    & współczynnik wpływu czynnika losowego \\
+    $\beta_0$ (beta\_0) & atrakcyjność świetlika przy odległości równej 0\\
+    $\gamma$ (gamma)    & współczynnik tłumienia światła \\ \hline
+  \end{tabular}
+  \caption{Parametry algorytmu \textbf{FFA}.}
+\end{table}
+
+\begin{table}[H]
+  \center
+  \begin{tabular}{c|c}
+    \hline
+    \textbf{Nazwa parametru} & \textbf{Znaczenie} \\ \hline
+    $\alpha$ (alpha)    & współczynnik aktualizacji (skalowania) poziomu głośności \\
+    $\gamma$ (gamma)    & współczynnik aktualizacji częstości wydania dźwięku\\
+    $f_{min}$ (f\_min)  & minimalna częstotliwość\\
+    $f_{max}$ (f\_max)  & maksymalna częstotliwość\\
+    $A_max$ (A\_min)    & minimalny poziom głośności\\
+    $A_0$ (A\_0)        & maksymalny poziom głośności\\
+  \end{tabular}
+  \caption{Parametry algorytmu \textbf{BAT}.}
+\end{table}
